@@ -1,0 +1,58 @@
+const causesPageData = [
+	{
+		id: 1,
+		image: "https://res.cloudinary.com/dufghzvge/image/upload/v1704294894/causes-page-img-3.13f07528_eghwa2.jpg",
+		category: "Medical",
+		title: "Raise Fund for Clean & Healthy Water",
+		description: "There are not many of passages of lorem ipsum avail isn alteration donationa in form simply free.",
+		raised: "25,270",
+		goal: "30,000",
+	},
+	{
+		id: 2,
+		image: "https://res.cloudinary.com/dufghzvge/image/upload/v1704294895/causes-page-img-1.51a31ef3_lvjtbe.jpg",
+		category: "Medical",
+		title: "Our donation is hope for poor childrens",
+		description: "There are not many of passages of lorem ipsum avail isn alteration donationa in form simply free.",
+		raised: "25,270",
+		goal: "30,000",
+	},
+	{
+		id: 3,
+		image: "https://res.cloudinary.com/dufghzvge/image/upload/v1704294894/causes-page-img-2.89729e96_jg6s8t.jpg",
+		category: "Medical",
+		title: "Education for Poor Children",
+		description: "There are not many of passages of lorem ipsum avail isn alteration donationa in form simply free.",
+		raised: "25,270",
+		goal: "30,000",
+	},
+	{
+		id: 4,
+		image: "https://res.cloudinary.com/dufghzvge/image/upload/v1704294894/causes-page-img-6.ad16d3ef_iuxqwy.jpg",
+		category: "Medical",
+		title: "Promoting The Rights of Children",
+		description: "There are not many of passages of lorem ipsum avail isn alteration donationa in form simply free.",
+		raised: "25,270",
+		goal: "30,000",
+	},
+	{
+		id: 5,
+		image: "https://res.cloudinary.com/dufghzvge/image/upload/v1704294894/causes-page-img-5.5e11fc7f_uip4su.jpg",
+		category: "Medical",
+		title: "Fundrising for Early Childhood Rise",
+		description: "There are not many of passages of lorem ipsum avail isn alteration donationa in form simply free.",
+		raised: "25,270",
+		goal: "30,000",
+	},
+	{
+		id: 6,
+		image: "https://res.cloudinary.com/dufghzvge/image/upload/v1704294894/causes-page-img-4.1c00f5ed_dbidda.jpg",
+		category: "Medical",
+		title: "School Counseling for Children",
+		description: "There are not many of passages of lorem ipsum avail isn alteration donationa in form simply free.",
+		raised: "25,270",
+		goal: "30,000",
+	},
+];
+
+export default causesPageData;

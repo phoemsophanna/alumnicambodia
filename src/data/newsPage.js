@@ -1,0 +1,58 @@
+const newsPage = [
+	{
+		id: 1,
+		image: "https://res.cloudinary.com/dufghzvge/image/upload/v1704362233/news-page-img-1.37a58ae0_ciemts.jpg",
+		date: "20 Jan, 2021",
+		title: "Donation is Hope for Poor Childrens in",
+		description: "There are many variations of but the majority have simply free text available not suffered.",
+		author: "Admin",
+		comments: 2,
+	},
+	{
+		id: 2,
+		image: "https://res.cloudinary.com/dufghzvge/image/upload/v1704362233/news-page-img-3.87af5243_tey54p.jpg",
+		date: "20 Jan, 2021",
+		title: "How Malnutrition Affect Children?",
+		description: "There are many variations of but the majority have simply free text available not suffered.",
+		author: "Admin",
+		comments: 2,
+	},
+	{
+		id: 3,
+		image: "https://res.cloudinary.com/dufghzvge/image/upload/v1704362233/news-page-img-5.71d8e50c_hwcltg.jpg",
+		date: "20 Jan, 2021",
+		title: "Capitalize on low hanging to identify",
+		description: "There are many variations of but the majority have simply free text available not suffered.",
+		author: "Admin",
+		comments: 2,
+	},
+	{
+		id: 4,
+		image: "https://res.cloudinary.com/dufghzvge/image/upload/v1704362233/news-page-img-4.01e26aff_nr4mta.jpg",
+		date: "20 Jan, 2021",
+		title: "Override the digital divide with additional",
+		description: "There are many variations of but the majority have simply free text available not suffered.",
+		author: "Admin",
+		comments: 2,
+	},
+	{
+		id: 5,
+		image: "https://res.cloudinary.com/dufghzvge/image/upload/v1704362232/news-page-img-6.71b37780_lnrmbj.jpg",
+		date: "20 Jan, 2021",
+		title: "Nanotechnology immersion along the",
+		description: "There are many variations of but the majority have simply free text available not suffered.",
+		author: "Admin",
+		comments: 2,
+	},
+	{
+		id: 6,
+		image: "https://res.cloudinary.com/dufghzvge/image/upload/v1704362417/news-page-img-2.43c169be_bar73d.jpg",
+		date: "20 Jan, 2021",
+		title: "User generate in have multi time",
+		description: "There are many variations of but the majority have simply free text available not suffered.",
+		author: "Admin",
+		comments: 2,
+	},
+];
+
+export default newsPage;
