@@ -16,6 +16,8 @@ const CharityContent = ({ campaignInfo = null }) => {
 		}
 	};
 
+	console.log(campaignInfo);
+
 	useEffect(() => {
 		if (campaignInfo) {
 			setPercent((campaignInfo?.totalRaised / campaignInfo?.goal) * 100);
@@ -26,11 +28,11 @@ const CharityContent = ({ campaignInfo = null }) => {
 		<Col xl={6} lg={6}>
 			<div className="welcome-one__right">
 				<div className="section-title text-left">
-					<span className="section-title__tagline">{t("main.sectionTitleTagline1")}</span>
-					<h2 className="section-title__title">{campaignInfo?.campaignTile}</h2>
+					<span className="section-title__tagline">{campaignInfo?.subtitle}</span>
+					<h2 className="section-title__title">{campaignInfo?.title}</h2>
 				</div>
-				<p className="welcome-one__right-text">{campaignInfo?.involvement}</p>
-				<div className="welcome-one__progress">
+				<p className="welcome-one__right-text" dangerouslySetInnerHTML={{ __html: campaignInfo?.des }}></p>
+				{/* <div className="welcome-one__progress">
 					<div className="welcome-one__progress-single">
 						<h4 className="welcome-one__progress-title mb-5">{t("general.Donation")}</h4>
 						<ReactVisibilitySensor offset={{ top: 10 }} delayedCall={true} onChange={onVisibilityChange}>
@@ -58,10 +60,13 @@ const CharityContent = ({ campaignInfo = null }) => {
 							</p>
 						</div>
 					</div>
-				</div>
-				<button className="welcome-one__btn thm-btn" onClick={() => toggleDonation(true, campaignInfo?.id)}>
-					<i className="fa fa-heart"></i>{t("general.DONATENOW")}
-				</button>
+				</div> */}
+				{/* <button className="welcome-one__btn thm-btn" onClick={() => toggleDonation(true, campaignInfo?.id)}>
+					<i className="fa fa-heart"></i>{t("general.READMORE")}
+				</button> */}
+				<a href="/about" className="welcome-one__btn thm-btn">
+					{t("general.READMORE")}
+				</a>
 			</div>
 		</Col>
 	);

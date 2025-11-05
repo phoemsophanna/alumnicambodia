@@ -1,6 +1,7 @@
 import Layout from "@/components/Layout/Layout";
 import NewsDetailsPage from "@/components/NewsDetailsPage/NewsDetailsPage";
 import PageHeader from "@/components/PageHeader/PageHeader";
+import { useRootContext } from "@/context/context";
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -11,6 +12,7 @@ const NewsDetails = () => {
   const {query: { id }} = useRouter();
   const {t} = useTranslation();
   const [record, setRecord] = useState(null);
+  const { lang } = useRootContext();
 
   const fetchDetail = async (id) => {
 		await axios
@@ -20,6 +22,7 @@ const NewsDetails = () => {
 				url: `${api.BASE_URL}/web/news/${id}`,
 				headers: {
 					"Content-Type": "application/json",
+					"Accept-Language": lang,
 				},
 			})
 			.then((response) => {

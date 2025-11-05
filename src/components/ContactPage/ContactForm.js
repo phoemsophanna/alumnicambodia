@@ -86,9 +86,25 @@ const ContactForm = () => {
 							)}
 						</div>
 					</Col>
+					<Col xl={12}>
+						<div className="contact-page__input-box">
+							<input
+								type="text"
+								placeholder={t("general.PhoneNumber")}
+								name="number"
+								value={contactForm.values.number}
+								onChange={contactForm.handleChange}
+								onBlur={contactForm.handleBlur}
+								style={{ marginBottom: contactForm.touched.number && contactForm.errors.number ? "0px" : "10px" }}
+							/>
+							{contactForm.touched.number && (
+								<small style={{ padding: "0 30px", fontSize: "14px", fontWeight: 400, color: "red" }}>{contactForm.errors.number}</small>
+							)}
+						</div>
+					</Col>
 				</Row>
 				<Row>
-					<Col xl={6}>
+					<Col xl={12}>
 						<div className="contact-page__input-box">
 							<input
 								type="email"
@@ -104,7 +120,7 @@ const ContactForm = () => {
 							)}
 						</div>
 					</Col>
-					<Col xl={6}>
+					<Col xl={12}>
 						<div className="contact-page__input-box">
 							<input
 								type="text"
@@ -122,22 +138,6 @@ const ContactForm = () => {
 					</Col>
 				</Row>
 				<Row>
-					<Col xl={12}>
-						<div className="contact-page__input-box">
-							<input
-								type="text"
-								placeholder={t("general.PhoneNumber")}
-								name="number"
-								value={contactForm.values.number}
-								onChange={contactForm.handleChange}
-								onBlur={contactForm.handleBlur}
-								style={{ marginBottom: contactForm.touched.number && contactForm.errors.number ? "0px" : "10px" }}
-							/>
-							{contactForm.touched.number && (
-								<small style={{ padding: "0 30px", fontSize: "14px", fontWeight: 400, color: "red" }}>{contactForm.errors.number}</small>
-							)}
-						</div>
-					</Col>
 					<Col xl={12}>
 						<div className="contact-page__input-box">
 							<textarea

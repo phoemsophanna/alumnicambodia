@@ -21,7 +21,7 @@ const settings = {
 	nav: false,
 	loop: false,
 	mouseDrag: true,
-	items: 8,
+	items: 6,
 	autoplay: false,
 	autoHeight: true,
 	controls: true,
@@ -29,8 +29,8 @@ const settings = {
 	controlsContainer: "#testimonial-one-carousel-nav",
 	responsive: {
 		1200: {
-			items: 8,
-			gutter: 30,
+			items: 6,
+			gutter: 80,
 			controls: true,
 		},
 		768: {
@@ -233,99 +233,67 @@ const Projects = () => {
 	// }, []);
 
 	return (
-		<Layout pageTitle={t("header.CAMPAIGN")}>
-			<PageHeader pageTitle={t("header.CAMPAIGN")} type="CAMPAIGN_PAGE" />
-			<section className={`counters-two in-page-campaign slide-mode`}>
-				<Jarallax className="counters-two-bg" speed={0.2} imgPosition="50% 0%">
-					<JarallaxImage src="https://res.cloudinary.com/dufghzvge/image/upload/v1704273539/three-boxes-img-1.651d35b8_adwvoe.jpg" />
-				</Jarallax>
-				<Container>
-					<Row>
-						<Col xl={12} lg={12}>
-							<div className="counters-two__right owl-theme owl-carouse">
-								<ul className="counters-two__four-boxes list-unstyled">
-									<TinySlider settings={settings}>
-										{campaignCategories.map((category, index) => (
-											<li
-												key={index}
-												onClick={() => {
-													localStorage.removeItem("homeCategoryId");
-													handleSelectCategory(category?.id);
-												}}
-											>
-												<div
-													className={
-														selectCategory.includes(category?.id) ? "counters-two__four-boxes-icon active" : "counters-two__four-boxes-icon"
-													}
-													style={{ overflow: "hidden", height: "120px" }}
-												>
-													<img
-														src={category?.image ? `${api.RESOURCE}${category?.image}` : "/causes-one-img-1.jpg"}
-														style={{ width: "100%", height: "100%", objectFit: "cover" }}
-													/>
-												</div>
-												<h4>
-													{category?.name} ({category?.countProject})
-												</h4>
-											</li>
-										))}
-									</TinySlider>
-								</ul>
-								<div id="testimonial-one-carousel-nav" className="owl-nav">
-									<button className="owl-prev me-2">
-										<span className="icon-arrow_forward_ios left"></span>
-									</button>
-									<button className="owl-next">
-										<span className="icon-arrow_forward_ios"></span>
-									</button>
-								</div>
-							</div>
-						</Col>
-					</Row>
-				</Container>
-			</section>
+		<Layout pageTitle={t("header.PROJECT")}>
+			<PageHeader pageTitle={t("header.PROJECT")} type="CAMPAIGN_PAGE" />
+			{
+				campaignCategories.length > 0 ? (
+					<section className={`counters-two in-page-campaign slide-mode`}>
+						<Jarallax className="counters-two-bg" speed={0.2} imgPosition="50% 0%">
+							<JarallaxImage src="https://res.cloudinary.com/dufghzvge/image/upload/v1704273539/three-boxes-img-1.651d35b8_adwvoe.jpg" />
+						</Jarallax>
+						<Container>
+							<Row>
+								<Col xl={12} lg={12}>
+									<div className="counters-two__right owl-theme owl-carouse">
+										<ul className="counters-two__four-boxes list-unstyled">
+											<TinySlider settings={settings}>
+												{campaignCategories.map((category, index) => (
+													<li
+														key={index}
+														onClick={() => {
+															localStorage.removeItem("homeCategoryId");
+															handleSelectCategory(category?.id);
+														}}
+													>
+														<div
+															className={
+																selectCategory.includes(category?.id) ? "counters-two__four-boxes-icon active" : "counters-two__four-boxes-icon"
+															}
+															style={{ overflow: "hidden", height: "120px", width: "120px", marginLeft: "auto", marginRight: "auto" }}
+														>
+															<img
+																src={category?.image ? `${api.RESOURCE}${category?.image}` : "/causes-one-img-1.jpg"}
+																style={{ width: "100%" }}
+															/>
+														</div>
+														<h4>
+															{category?.name} ({category?.countProject})
+														</h4>
+													</li>
+												))}
+											</TinySlider>
+										</ul>
+										<div id="testimonial-one-carousel-nav" className="owl-nav">
+											<button className="owl-prev me-2">
+												<span className="icon-arrow_forward_ios left"></span>
+											</button>
+											<button className="owl-next">
+												<span className="icon-arrow_forward_ios"></span>
+											</button>
+										</div>
+									</div>
+								</Col>
+							</Row>
+						</Container>
+					</section>
+				) : ""
+			}
+			
 			<section className="causes-one causes-page pb-0">
 				<Container>
 					<Row className="justify-content-between">
-						<Col lg={4}>
-							<div className="filter">
-								<div className="cam-dropdown-image">
-									<button
-										type="button"
-										className="btn organization-btn-dropdown"
-										onClick={() => setOpenOrganizationDropdown(!openOrganizationDropdown)}
-									>
-										{t("general.Organization")} <i className="fas fa-caret-down"></i>
-									</button>
-									<div className={openOrganizationDropdown ? `cam-dropdown-wrapper open` : `cam-dropdown-wrapper`}>
-										<div className="cam-dropdown-option">
-											<button
-												type="button"
-												className={showAllOrganization ? `btn-select-all active` : `btn-select-all`}
-												onClick={() => showAllCampaign()}
-											>
-												{t("general.All")} (12)
-											</button>
-											<button type="button" className="btn-change-list-type" onClick={() => setIsGrid(!isGrid)}>
-												{isGrid ? <i className="fas fa-th"></i> : <i className="fas fa-list-ul"></i>}
-											</button>
-										</div>
-										<div className={isGrid ? `cam-dropdown-list list-grid` : `cam-dropdown-list`}>
-											{organizationList.map((org) => (
-												<div className="cam-dropdown-item" key={org.id} onClick={() => handleOrg(org.id)}>
-													<a className="organization-card">
-														<img src={org?.image ? `${api.RESOURCE}${org?.image}` : "/causes-one-img-1.jpg"} alt="" />
-														<p>{org?.name}</p>
-													</a>
-												</div>
-											))}
-										</div>
-									</div>
-								</div>
-							</div>
-						</Col>
-						<Col lg={4}>
-							<div className="filter filter-end">
+						<Col lg={4} sm={4} xs={4}>
+							<div className="filter filter-start">
 								<DropdownButton id="dropdown-basic-button2" title={t("general.Location")} variant="light">
 									{locations.map((location, index) => (
 										<Dropdown.Item key={index} onClick={() => handleSelectLocation(location.city)}>
@@ -333,6 +301,10 @@ const Projects = () => {
 										</Dropdown.Item>
 									))}
 								</DropdownButton>
+							</div>
+						</Col>
+						<Col lg={4} sm={4} xs={4}>
+							<div className="filter filter-end">
 								<DropdownButton id="dropdown-basic-button3" title={t("general.SortBy")} variant="light">
 									<Dropdown.Item onClick={() => handleSortBy("trending")}>{t("general.Trending")}</Dropdown.Item>
 									<Dropdown.Item onClick={() => handleSortBy("ending")}>{t("general.EndingSoon")}</Dropdown.Item>

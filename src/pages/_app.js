@@ -37,7 +37,7 @@ const options = {
 
 const MyApp = ({ Component, pageProps }) => {
 	return (
-		<GoogleOAuthProvider clientId="669829110000-3p54r4of336a74q3r895ged05bgdtlm4.apps.googleusercontent.com">
+		<GoogleOAuthProvider clientId="596770342398-kg1r9t5j6aqd1lm1r26pe0ig8jcflaa9.apps.googleusercontent.com">
 			<ContextProvider>
 				<AlertProvider template={AlertTemplate} {...options}>
 					<TopProgressBar />

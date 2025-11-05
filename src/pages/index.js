@@ -18,14 +18,17 @@ export async function getStaticProps() {
 	const res = await fetch(`${api.BASE_URL}/web/home/slider`);
 	const response = await res.json();
 	const resCampaignHome = await fetch(`${api.BASE_URL}/web/campaign/home`);
-	const responseCampaignHome = await resCampaignHome.json();
+	let responseCampaignHome = null;
+	if(resCampaignHome.ok){
+		responseCampaignHome = await resCampaignHome.json();
+	}
 
 	return {
 		props: {
 			sliders: response,
-			inNeedCampaign: responseCampaignHome?.inNeedCampaign,
-			latestCampaign: responseCampaignHome?.latestCampaign,
-		},
+			inNeedCampaign: responseCampaignHome ? responseCampaignHome?.inNeedCampaign : [],
+			latestCampaign: responseCampaignHome ? responseCampaignHome?.latestCampaign : [],
+			},
 		revalidate: 10, // In seconds
 	};
 }
@@ -124,10 +127,16 @@ const Home = (props) => {
 	return (
 		<Layout pageTitle={t("header.HOME")}>
 			<MainSlider sliderList={props?.sliders || []} />
-			<Charity campaign={mainCampaign} />
-			<CausesOne campaigns={campaignList} latestProject={homepage?.latestProject} />
+			{/* <Charity campaign={mainCampaign} /> */}
+			<Charity campaign={homepage} />
+			<NewsOne data={homepage} />
+			{
+				campaignList?.length > 0 ? (
+					<CausesOne campaigns={campaignList} latestProject={homepage?.latestProject} />
+				) : ("")
+			}
 			<JoinOne data={homepage} />
-			<section className="three-boxes">
+			{/* <section className="three-boxes">
 				<div className="container-box">
 					<Row>
 						{categories.map((cat, index) => (
@@ -147,9 +156,8 @@ const Home = (props) => {
 						))}
 					</Row>
 				</div>
-			</section>
+			</section> */}
 			<TestimonialOne className="home-page" data={homepage} />
-			<NewsOne data={homepage} />
 			<BrandOne />
 		</Layout>
 	);

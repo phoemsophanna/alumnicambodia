@@ -16,23 +16,28 @@ const footerData = {
 	exploreList: [
 		{
 			id: 1,
-			href: "/projects",
-			title: "Campaign",
+			href: "/about",
+			title: "About",
 		},
 		{
 			id: 2,
-			href: "/raise-fund",
-			title: "Raise Fund",
+			href: "/gallery",
+			title: "Gallery",
 		},
 		{
 			id: 3,
-			href: "/feed",
-			title: "Feed",
+			href: "/projects",
+			title: "Projects",
 		},
 		{
 			id: 4,
-			href: "/donors",
-			title: "Doors",
+			href: "/member",
+			title: "Member",
+		},
+		{
+			id: 6,
+			href: "/news",
+			title: "news&events",
 		},
 	],
 };

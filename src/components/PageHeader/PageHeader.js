@@ -42,7 +42,7 @@ const PageHeader = ({ pageTitle = "", type = "" }) => {
 			></div>
 			<div className="container">
 				<h2>{pageTitle}</h2>
-				<ul className="thm-breadcrumb list-unstyled">
+				{/* <ul className="thm-breadcrumb list-unstyled">
 					<li>
 						<Link href="/">{t("header.HOME")}</Link>
 					</li>
@@ -50,7 +50,7 @@ const PageHeader = ({ pageTitle = "", type = "" }) => {
 					<li>
 						<span>{pageTitle}</span>
 					</li>
-				</ul>
+				</ul> */}
 			</div>
 		</section>
 	);

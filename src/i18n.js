@@ -4,6 +4,8 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import Backend from "i18next-http-backend";
 import translationEN from "../public/locales/eng/translation.json";
 import translationKH from "../public/locales/khm/translation.json";
+import translationCH from "../public/locales/ch/translation.json";
+import { transitions } from "react-alert";
 
 const resources = {
     ENG: {
@@ -11,6 +13,9 @@ const resources = {
     },
     KHM: {
       translation: translationKH
+    },
+    CH: {
+      translation: translationCH
     }
   };
 

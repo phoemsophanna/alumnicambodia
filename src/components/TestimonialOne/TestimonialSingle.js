@@ -32,7 +32,7 @@ const TestimonialSingle = ({ singleTestimonial }) => {
 						</div>
 						<div className="testimonial-one__client-name">
 							<h3>{donor?.name}</h3>
-							<p>${donor?.totalDonation?.toFixed(2)}</p>
+							<p>${parseFloat(donor?.totalDonation).toFixed(2)}</p>
 						</div>
 					</div>
 				</div>

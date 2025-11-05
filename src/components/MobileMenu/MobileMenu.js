@@ -4,10 +4,10 @@ import Link from "next/link";
 import React from "react";
 import { Image } from "react-bootstrap";
 import NavItem from "./NavItem";
-import brandLogo from "../../assets/images/cda-logo.png";
+import brandLogo from "../../assets/images/LOGO-CAA New.png";
 
 const MobileMenu = () => {
-	const { toggleMenu, menuStatus } = useRootContext();
+	const { toggleMenu, menuStatus, contact } = useRootContext();
 
 	return (
 		<div className={`mobile-nav__wrapper  animated fadeInLeft${menuStatus ? " expanded" : ""}`}>
@@ -35,21 +35,31 @@ const MobileMenu = () => {
 				<ul className="mobile-nav__contact list-unstyled">
 					<li>
 						<i className="fa fa-envelope"></i>
-						<a href="mailto:info@cdafund.org">info@cdafund.org</a>
+						<a href={`mailto:${contact?.email1}`}>{contact?.email1}</a>
 					</li>
 					<li>
 						<i className="fa fa-phone-alt"></i>
-						<a href="tel:+855884886422">+855 88 488 6422</a>
+						<a href={`tel:${contact?.phoneNumber1}`}>{contact?.phoneNumber1}</a>
 					</li>
 					<li>
 						<i className="fa fa-phone-alt"></i>
-						<a href="tel:+85512637686">+85512637686</a>
+						<a href={`tel:${contact?.phoneNumber2}`}>{contact?.phoneNumber2}</a>
 					</li>
 				</ul>
 				<div className="mobile-nav__top">
 					<div className="mobile-nav__social">
 						{social.map(({ icon, link }, index) => (
-							<a key={index} href={link} className={`fab ${icon}`}></a>
+							<a key={index} href={
+								link === "facebookLink"
+									? contact?.facebookLink
+									: link === "linkedinLink"
+									? contact?.linkedinLink
+									: link === "instagramLink"
+									? contact?.instagramLink
+									: link === "telegramLink"
+									? contact?.telegramLink
+									: null
+							} className={`fab ${icon}`}></a>
 						))}
 					</div>
 				</div>

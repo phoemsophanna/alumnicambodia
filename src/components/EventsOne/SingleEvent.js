@@ -1,33 +1,31 @@
 import Link from "next/link";
 import React from "react";
 import { Image } from "react-bootstrap";
+import { api } from "src/config";
 
 const SingleEvent = ({ event = {}, eventsPage }) => {
-	const { id, date, time, title, image } = event;
+	const { id, title_content, datetime, image } = event;
 
 	return (
 		<div>
 			<div className="events-one__single" style={{ userSelect: eventsPage ? "unset" : "none" }}>
 				<div className="events-one__img">
-					<Image src={image} alt="" />
+					<Image src={api.RESOURCE + image} alt="" />
 					<div className="events-one__date-box">
 						<p>
-							{date.split(" ").map((t, i) => (
-								<span className="d-block" key={i}>
-									{t}
-								</span>
-							))}
+							<span className="d-block">
+								{datetime.split(" ").map((t, i) => (
+									t + (i == 0 ? "-" : "")
+								))}
+							</span>
+							
 						</p>
 					</div>
 					<div className="events-one__bottom">
-						<p>
-							<i className="far fa-clock"></i>
-							{time}
-						</p>
 						<h3 className="events-one__bottom-title">
-							<Link href="/event-details">
+							<Link href={`/portfolios/${id}`}>
 								<a>
-									{title.split("\n").map((t, i) => (
+									{title_content.split("\n").map((t, i) => (
 										<span className="d-block" key={i}>
 											{t}
 										</span>

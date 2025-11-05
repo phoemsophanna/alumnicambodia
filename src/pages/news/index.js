@@ -1,6 +1,7 @@
 import Layout from "@/components/Layout/Layout";
 import NewsPage from "@/components/NewsPage/NewsPage";
 import PageHeader from "@/components/PageHeader/PageHeader";
+import { useRootContext } from "@/context/context";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -9,6 +10,7 @@ import { api } from "src/config";
 const News = () => {
 	const {t} = useTranslation();
 	const [record, setRecord] = useState([]);
+	const { lang } = useRootContext();
 
 	const fetchNewsEvent = async () => {
 		await axios
@@ -18,6 +20,7 @@ const News = () => {
 				url: `${api.BASE_URL}/web/news?type=NEWS`,
 				headers: {
 					"Content-Type": "application/json",
+					"Accept-Language": lang,
 				},
 			})
 			.then((response) => {

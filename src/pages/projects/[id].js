@@ -68,7 +68,7 @@ const ProjectDetail = (props) => {
 	}, [lang]);
 
 	return (
-		<Layout pageTitle={t("general.campaignDetail")}>
+		<Layout pageTitle={t("header.ProjectDetail")}>
 			<NextSeo
 				openGraph={{
 					title: props?.project?.campaignTile,
@@ -91,7 +91,7 @@ const ProjectDetail = (props) => {
 					],
 				}}
 			/>
-			<PageHeader pageTitle={t("general.campaignDetail")} type="CAMPAIGN_PAGE" />
+			<PageHeader pageTitle={t("header.ProjectDetail")} type="CAMPAIGN_PAGE" />
 			<CausesDetailsPage detail={record} />
 		</Layout>
 	);

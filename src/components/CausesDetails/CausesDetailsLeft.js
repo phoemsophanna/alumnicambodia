@@ -274,7 +274,7 @@ const CausesDetailsLeft = ({ campaign = null }) => {
 					))}
 				</Row>
 			</div>
-			<div className="comment-one">
+			{/* <div className="comment-one">
 				<h3 className="comment-one__title">Comments</h3>
 				<div className="comment-form_wrapper">
 					<Form.Group controlId="exampleForm.ControlTextarea1">
@@ -304,7 +304,7 @@ const CausesDetailsLeft = ({ campaign = null }) => {
 						</Button>
 					)
 				) : null}
-			</div>
+			</div> */}
 		</div>
 	);
 };

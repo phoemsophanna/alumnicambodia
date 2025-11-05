@@ -17,11 +17,10 @@ const mainSlideOptions = {
 		type: "bullets",
 		clickable: true,
 	},
-	// navigation: {
-	//   nextEl: "#main-slider__swiper-button-next",
-	//   prevEl: "#main-slider__swiper-button-prev",
-	// },
-	// navigation: true,
+	navigation: {
+	  nextEl: "#main-slider__swiper-button-next",
+	  prevEl: "#main-slider__swiper-button-prev",
+	},
 	autoplay: {
 		delay: 6000,
 	},
@@ -75,7 +74,21 @@ const MainSlider = (props) => {
 						))}
 					</div>
 					<div className="swiper-pagination" id="main-slider-pagination"></div>
-					<SliderCounter />
+					<div className="main-slider__nav">
+						<div
+							className="swiper-button-prev"
+							id="main-slider__swiper-button-prev"
+						>
+							<i className="icon-right-arrow icon-left-arrow"></i>
+						</div>
+						<div
+							className="swiper-button-next"
+							id="main-slider__swiper-button-next"
+						>
+							<i className="icon-right-arrow"></i>
+						</div>
+					</div>
+					{/* <SliderCounter /> */}
 				</Swiper>
 			) : null}
 		</section>

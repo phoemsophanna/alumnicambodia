@@ -185,12 +185,13 @@ const CausesDetailsRight = ({ creator = null, campaignId = null, detail = null }
 	useEffect(() => {
 		setCountLike(detail?.likeCount);
 		setCountShare(detail?.shareCount);
-		fetch(`https://api.cdafund.org/api/web/campaign/view-qr-code?qrcode=${detail?.qrCode}`)
-			.then((res) => res.text())
-			.then((res) => {
-				setQrCode(res);
-			});
+		// fetch(`https://api.cdafund.org/api/web/campaign/view-qr-code?qrcode=${detail?.qrCode}`)
+		// 	.then((res) => res.text())
+		// 	.then((res) => {
+		// 		setQrCode(res);
+		// 	});
 	}, [detail]);
+	console.log(detail);
 
 	return (
 		<div className="causes-details__right">
@@ -285,11 +286,26 @@ const CausesDetailsRight = ({ creator = null, campaignId = null, detail = null }
 			</Modal>
 			<div className="causes-details__author">
 				<div className="author__info">
-					<img src={creator?.image ? `${api.RESOURCE}${creator?.image}` : "/default_pfp.jpg"} alt="author-cda-image" />
-					<div className="author__info--desc">
-						<h3>{creator?.name || "Loading..."}</h3>
-						<p>Joint: {creator?.joinAt || "Loading..."}</p>
-					</div>
+					{
+						detail?.fullName ? (
+							<>
+							<img src={detail?.profile ? `${api.RESOURCE}${detail?.profile}` : "/default_pfp.jpg"} alt="author-cda-image" />
+							<div className="author__info--desc">
+								<h3>{detail?.fullName || "Loading..."}</h3>
+								<p>Joint: {detail?.startDate || "Loading..."}</p>
+							</div>
+							</>
+						) : (
+							<>
+							<img src={creator?.image ? `${api.RESOURCE}${creator?.image}` : "/default_pfp.jpg"} alt="author-cda-image" />
+							<div className="author__info--desc">
+								<h3>{creator?.name || "Loading..."}</h3>
+								<p>Joint: {creator?.joinAt || "Loading..."}</p>
+							</div>
+							</>
+						)
+					}
+					
 				</div>
 				<div className="author__action">
 					<button className={`author__action--btn ${isFavorite ? "active" : null}`} onClick={() => handleLikeCampaign()}>
@@ -306,12 +322,12 @@ const CausesDetailsRight = ({ creator = null, campaignId = null, detail = null }
 						{countShare}
 					</button>
 					<div className="h-line"></div>
-					<button className="author__action--btn" onClick={() => setQrCodeModalShow(true)}>
+					{/* <button className="author__action--btn" onClick={() => setQrCodeModalShow(true)}>
 						<div className="icon">
 							<i className="fas fa-qrcode"></i>
 						</div>
 						QR Code
-					</button>
+					</button> */}
 				</div>
 			</div>
 			<div className="causes-details__donations">
@@ -323,7 +339,7 @@ const CausesDetailsRight = ({ creator = null, campaignId = null, detail = null }
 								<Image src={item?.donor?.image ? `${api.RESOURCE}${item?.donor?.image}` : "/default_pfp.jpg"} alt="" />
 							</div>
 							<div className="causes-details__donations-content">
-								<h4>${item?.amount?.toFixed(2)}</h4>
+								<h4>${parseFloat(item?.amount).toFixed(2)}</h4>
 								<h5>
 									{item?.donor?.name || "Anonymous"} <span>{item?.dayPass}</span>
 								</h5>

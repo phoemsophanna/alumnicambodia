@@ -3,11 +3,13 @@ import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { ButtonGroup, Col, Container, Form, Image, Modal, Row, ToggleButton } from "react-bootstrap";
 import ReactVisibilitySensor from "react-visibility-sensor";
-import BrandLogo from "../../assets/images/cda-logo.png";
+import BrandLogo from "../../assets/images/LOGO-CAA New.png";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { api } from "src/config";
 import Cookies from "js-cookie";
+import LogoKhqr from "../../assets/images/khqr.png";
+import LogoCredit from "../../assets/images/credit_card.png";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
@@ -21,11 +23,13 @@ const DonationModal = () => {
 	const router = useRouter();
 	const alert = useAlert();
 	// Template
-	const { donationModal, toggleDonation, donationDetail } = useRootContext();
+	const { donationModal, toggleDonation, lang, donationDetail } = useRootContext();
 	const [suggestPrice, setSuggestPrice] = useState(1);
 	const [radioValue, setRadioValue] = useState("");
 	const [tip, setTip] = useState(0);
 	const [tipCustom, setTipCustom] = useState(false);
+	const [termModal, setTermModal] = useState(false);
+	const [term,setTerm] = useState(null);
 
 	const donationSubmit = useFormik({
 		initialValues: {
@@ -105,15 +109,38 @@ const DonationModal = () => {
 		setTipCustom(false);
 	};
 
+	const fetchTerm = async () => {
+		await axios
+			.request({
+				method: "get",
+				maxBodyLength: Infinity,
+				url: `${api.BASE_URL}/web/donation-term`,
+				headers: {
+					"Content-Type": "application/json",
+					"Accept-Language": lang
+				},
+			})
+			.then((response) => {
+				setTerm(response.data);
+			})
+			.catch((e) => {
+				console.error(e);
+			})
+			.finally(() => {
+				// setLoading(false);
+			});
+	}
+
 	useEffect(() => {
 		setSuggestPrice(1);
 		setRadioValue("");
 		setTip(0);
 		setTipCustom(false);
+		fetchTerm();
 		return () => {
 			reset();
 		};
-	}, []);
+	}, [lang]);
 
 	const handleClickSuggestPrice = (price) => {
 		setSuggestPrice(price);
@@ -192,7 +219,7 @@ const DonationModal = () => {
 										<p>100% of all donations go to the beneficiaries</p>
 									</div>
 									<div className="donation__input-container">
-										<div className="multi-button">
+										{/* <div className="multi-button">
 											{radios.map((el, index) => (
 												<button
 													key={index}
@@ -209,7 +236,7 @@ const DonationModal = () => {
 													{el == radioValue ? <i className="far fa-calendar-check"></i> : <i className="far fa-calendar"></i>} {el}
 												</button>
 											))}
-										</div>
+										</div> */}
 
 										<div className="donation__input-price">
 											<input
@@ -281,7 +308,7 @@ const DonationModal = () => {
 											</button>
 										</div>
 									</div>
-									<div
+									{/* <div
 										style={{
 											display: "block",
 											width: "100%",
@@ -345,7 +372,7 @@ const DonationModal = () => {
 										>
 											<i className="fas fa-donate"></i> {!tipCustom ? "Custom Tip" : "Close Custom Tip"}
 										</button>
-									</div>
+									</div> */}
 									<div className="causes__progress-contain">
 										<div className="causes-one__progress">
 											<ReactVisibilitySensor offset={{ top: 10 }} delayedCall={true} onChange={onVisibilityChange}>
@@ -353,10 +380,10 @@ const DonationModal = () => {
 													<div
 														className="bar-inner count-bar"
 														data-percent={`${(donationDetail?.totalRaised / donationDetail?.goal) * 100}%`}
-														style={{ width: `${(donationDetail?.totalRaised / donationDetail?.goal) * 100}%`, opacity: 1 }}
+														style={{ width: `${((donationDetail?.totalRaised / donationDetail?.goal) * 100) >= 100 ? 100 : (donationDetail?.totalRaised / donationDetail?.goal) * 100}%`, opacity: 1 }}
 													>
-														<div className="count-text" style={{ opacity: 1 }}>
-															{(donationDetail?.totalRaised / donationDetail?.goal) * 100}%
+														<div className="count-text" style={{ opacity: 1, width: "auto" }}>
+															{((donationDetail?.totalRaised / donationDetail?.goal) * 100).toFixed(2)}%
 														</div>
 													</div>
 												</div>
@@ -373,11 +400,23 @@ const DonationModal = () => {
 									</div>
 									<Form.Label style={{ color: "#333", fontWeight: "800" }}>Payment Options</Form.Label>
 									<div className="payment-options">
+										<Form.Check type="radio" id={`check-api-radio-3`}>
+											<Form.Check.Input type="radio" name="paymentMethod" onChange={donationSubmit.handleChange} value="KHQR" />
+											<Form.Check.Label>
+												<div className="check-payment-option">
+													<Image src={LogoKhqr.src} style={{borderRadius: "10px"}} alt="" />
+													<div className="check-payment-option-content">
+														<h4>KHQR</h4>
+														<p>Scan to pay with member bank app</p>
+													</div>
+												</div>
+											</Form.Check.Label>
+										</Form.Check>
 										<Form.Check type="radio" id={`check-api-radio-1`}>
 											<Form.Check.Input type="radio" name="paymentMethod" onChange={donationSubmit.handleChange} value="CREDIT_DEBIT_CARD" />
 											<Form.Check.Label>
 												<div className="check-payment-option">
-													<Image src="https://res.cloudinary.com/dufghzvge/image/upload/v1704630017/Group-603_mwddmk.png" alt="" />
+													<Image src={LogoCredit.src} style={{borderRadius: "10px"}} alt="" />
 													<div className="check-payment-option-content">
 														<h4>Credit/Debit Card</h4>
 														<Image src="https://res.cloudinary.com/dufghzvge/image/upload/v1704630599/4Cards_1x_bhrnwd.png" alt="" />
@@ -385,7 +424,7 @@ const DonationModal = () => {
 												</div>
 											</Form.Check.Label>
 										</Form.Check>
-										<Form.Check type="radio" id={`check-api-radio-2`}>
+										{/* <Form.Check type="radio" id={`check-api-radio-2`}>
 											<Form.Check.Input type="radio" name="paymentMethod" onChange={donationSubmit.handleChange} value="SATHAPANA_PAY" />
 											<Form.Check.Label>
 												<div className="check-payment-option">
@@ -396,19 +435,7 @@ const DonationModal = () => {
 													</div>
 												</div>
 											</Form.Check.Label>
-										</Form.Check>
-										<Form.Check type="radio" id={`check-api-radio-3`}>
-											<Form.Check.Input type="radio" name="paymentMethod" onChange={donationSubmit.handleChange} value="KHQR" />
-											<Form.Check.Label>
-												<div className="check-payment-option">
-													<Image src="https://res.cloudinary.com/dufghzvge/image/upload/v1704630333/unnamed_c6tmgk.png" alt="" />
-													<div className="check-payment-option-content">
-														<h4>KHQR</h4>
-														<p>Scan to pay with member bank app</p>
-													</div>
-												</div>
-											</Form.Check.Label>
-										</Form.Check>
+										</Form.Check> */}
 										{donationSubmit.errors.paymentMethod ? (
 											<small className="text-danger" style={{ fontSize: "14px" }}>
 												{donationSubmit.errors.paymentMethod}
@@ -432,12 +459,12 @@ const DonationModal = () => {
 											<span className="donation-grid-title">Donation</span>
 											<span className="donation-grid-data">${parseFloat(donationSubmit.values.amount).toFixed(2)}</span>
 										</div>
-										<div className="donation-grid">
+										{/* <div className="donation-grid">
 											<span className="donation-grid-title">Tip</span>
 											<span className="donation-grid-data">
 												${donationSubmit.values.tip ? parseFloat(donationSubmit.values.tip).toFixed(2) : 0.0}
 											</span>
-										</div>
+										</div> */}
 										<div className="divide dash"></div>
 										<div className="donation-grid">
 											<span className="donation-grid-data">Total</span>
@@ -446,18 +473,34 @@ const DonationModal = () => {
 											</span>
 										</div>
 									</div>
-									<Form.Check
-										type="checkbox"
-										id={`default-checkbox`}
-										label={`By continuing, you agree with Terms and Privacy`}
-										name="isConfirmAgreement"
-										onChange={donationSubmit.handleChange}
-										value={donationSubmit.values.isConfirmAgreement}
-										isInvalid={!donationSubmit.errors.isConfirmAgreement && donationSubmit.touched.isConfirmAgreement}
-									/>
-									<button type="submit" className="thm-btn donation-page__btn">
-										<i className="fas fa-donate"></i> DONATE
-									</button>
+									<div style={{display: "flex",alignItems: "center",gap: "5px",marginTop: "10px"}}>
+										<Form.Check
+											type="checkbox"
+											id={`default-checkbox`}
+											name="isConfirmAgreement"
+											onChange={donationSubmit.handleChange}
+											value={donationSubmit.values.isConfirmAgreement}
+											isInvalid={!donationSubmit.errors.isConfirmAgreement && donationSubmit.touched.isConfirmAgreement}
+										/>
+										<Form.Check.Label htmlFor="default-checkbox" style={{fontSize: "14px"}}>
+											By continuing, you agree with{' '}
+											<span onClick={() => setTermModal(!termModal)} style={{ textDecoration: 'underline' }}>
+											Terms and Privacy
+											</span>
+										</Form.Check.Label>
+									</div>
+									
+									{
+										donationSubmit.values.isConfirmAgreement && !donationSubmit.errors.paymentMethod ? (
+											<button type="submit" className="thm-btn donation-page__btn">
+												<i className="fas fa-donate"></i> DONATE
+											</button>
+										) : (
+											<button type="submit" style={{backgroundColor: "grey"}} disabled className="thm-btn donation-page__btn">
+												<i className="fas fa-donate"></i> DONATE
+											</button>
+										)
+									}
 								</div>
 							</Col>
 							<Col xl={5} lg={5}>
@@ -485,10 +528,10 @@ const DonationModal = () => {
 										<span className="donation-grid-title">Donation</span>
 										<span className="donation-grid-data">${parseFloat(donationSubmit.values.amount).toFixed(2)}</span>
 									</div>
-									<div className="donation-grid">
+									{/* <div className="donation-grid">
 										<span className="donation-grid-title">Tip</span>
 										<span className="donation-grid-data">${donationSubmit.values.tip ? parseFloat(donationSubmit.values.tip).toFixed(2) : 0.0}</span>
-									</div>
+									</div> */}
 									<div className="divide dash"></div>
 									<div className="donation-grid">
 										<span className="donation-grid-data">Total</span>
@@ -500,6 +543,16 @@ const DonationModal = () => {
 							</Col>
 						</Row>
 					</Form>
+
+					<div className={`term-modal ${termModal ? 'active' : ""}`} style={{width: "100vw", height: "100%", display: "flex", alignItems: "center", position: "fixed",top: "0",left: "0"}}>
+						
+						<div className="term-container">
+							<button onClick={() => setTermModal(!termModal)}><i class="far fa-times-circle"></i></button>
+							<div className="term-scroll">
+								<div className="fs-16 fw-5 text-gray mb-4 pb-lg-2" dangerouslySetInnerHTML={{__html: term?.description}}></div>
+							</div>
+						</div>
+					</div>
 				</Container>
 			</Modal.Body>
 		</Modal>

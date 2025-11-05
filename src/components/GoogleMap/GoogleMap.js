@@ -3,11 +3,7 @@ import React from "react";
 const GoogleMap = ({data = null}) => {
 	return (
 		<section className="contact-page-google-map">
-			<iframe
-				src={data?.embedMap}
-				className="contact-page-google-map__one"
-				allowFullScreen
-			></iframe>
+			<div className="fs-16 fw-5 text-gray mb-4 pb-lg-2" dangerouslySetInnerHTML={{__html: data?.embedMap}}></div>
 		</section>
 	);
 };

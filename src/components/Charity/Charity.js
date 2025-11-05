@@ -9,8 +9,8 @@ const Charity = ({ campaign = null }) => {
 			<Container>
 				<Row>
 					<CharityImage
-						mainImg={campaign?.campaignGallery?.length > 0 ? campaign?.campaignGallery[0] : null}
-						smallImg={campaign?.campaignGallery?.length > 1 ? campaign?.campaignGallery[1] : null}
+						mainImg={campaign?.thumbnailTwo ? campaign?.thumbnailTwo : null}
+						// smallImg={campaign?.thumbnailTwo ? campaign?.thumbnailTwo : null}
 					/>
 					<CharityContent campaignInfo={campaign} />
 				</Row>

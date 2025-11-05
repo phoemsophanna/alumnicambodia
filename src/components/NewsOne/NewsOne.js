@@ -80,20 +80,17 @@ const NewsOne = ({ data = null }) => {
 								</Link>
 							</div>
 							<div className="news-one__bottom">
-								<ul className="list-unstyled news-one__meta">
-									<li>{news?.createdAt}</li>
-									<li>
-										<span>/</span>
-									</li>
-									{/* <li>
-										<a href="#">0 Comments</a>
-									</li> */}
-								</ul>
 								<h3 className="news-one__title">
 									<Link href={news?.type === "NEWS" ? `/news/${news?.id}` : `/events/${news?.id}`}>
 										<a>{news?.title}</a>
 									</Link>
 								</h3>
+								<p style={{color: "#fff"}}>
+									{news?.summary}
+								</p>
+								<ul style={{marginBottom: "0"}} className="list-unstyled news-one__meta">
+									<li>{news?.createdAt}</li>
+								</ul>
 							</div>
 						</div>
 					</Col>

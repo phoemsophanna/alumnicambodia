@@ -139,8 +139,8 @@ const CampaignCategory = () => {
 	}, [donationModal, lang, selectCategoryId]);
 
 	return (
-		<Layout pageTitle={t("header.CAMPAIGN")}>
-			<PageHeader pageTitle={t("header.CAMPAIGN")} type="CAMPAIGN_PAGE" />
+		<Layout pageTitle={t("header.PROJECT")}>
+			<PageHeader pageTitle={t("header.PROJECT")} type="CAMPAIGN_PAGE" />
 			<section className="causes-one causes-page pb-0">
 				<Container>
 					<Row className="justify-content-between">

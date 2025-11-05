@@ -2,7 +2,7 @@ import { useRootContext } from "@/context/context";
 import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { Button, CloseButton, Col, Container, Form, Image, Modal, Row, Spinner } from "react-bootstrap";
-import BrandLogo from "../../assets/images/cda-logo.png";
+import BrandLogo from "../../assets/images/LOGO-CAA New.png";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import { useGoogleLogin } from "@react-oauth/google";
@@ -15,6 +15,7 @@ import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
 import OtpInput from "react-otp-input";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
+import { api } from "src/config";
 
 const LoginModal = () => {
 	const router = useRouter();
@@ -31,11 +32,42 @@ const LoginModal = () => {
 	const [message, setMessage] = useState(null);
 	const [forgetPassMessage, setForgetPassMessage] = useState(null);
 	const [phone, setPhone] = useState("");
-	const { loginModal, toggleLogin, toggleLoginSuccess, updateUserCache } = useRootContext();
+	const { loginModal, toggleLogin, toggleLoginSuccess, lang, updateUserCache } = useRootContext();
 	const [modalTitle, setModalTitle] = useState("SIGN_IN");
 	const [isLoading, setLoading] = useState(false);
 	const [isOtpLoading, setOtpLoading] = useState(false);
 	const [registerMsg, setRegisterMsg] = useState("");
+	// New Develop
+	const [passwordGoogle, setPasswordGoogle] = useState(false);
+	const [googleData, setGoogleData] = useState({});
+
+	const [homepage, setHomepage] = useState(null);
+
+	const fetchHomePage = async () => {
+		await axios
+			.request({
+				method: "get",
+				maxBodyLength: Infinity,
+				url: `${api.BASE_URL}/web/home`,
+				headers: {
+					"Content-Type": "application/json",
+					"Accept-Language": lang,
+				},
+			})
+			.then((response) => {
+				setHomepage(response.data);
+			})
+			.catch((e) => {
+				console.error(e);
+			})
+			.finally(() => {
+				// setLoading(false);
+			});
+	};
+
+	useEffect(() => {
+		fetchHomePage();
+	}, []);
 
 	const loginSubmit = useFormik({
 		initialValues: {
@@ -93,9 +125,11 @@ const LoginModal = () => {
 			values.email = values.loginWith == 2 ? values.email : "";
 			if (values.loginWith == 1) {
 				// onSignup();
-				onSignupWithPhone();
+				// onSignupWithPhone();
+				onOTPVerifyPhone();
 			} else {
-				onSignupWithEmail();
+				// onSignupWithEmail();
+				onOTPVerifyEmail();
 			}
 		},
 	});
@@ -185,6 +219,44 @@ const LoginModal = () => {
 		},
 	});
 
+	// New Develop
+	const googleSubmit = useFormik({
+		initialValues: {
+			password: "",
+			confirmPassword: ""
+		},
+		validationSchema: Yup.object({
+			password: Yup.string().required("Password is required").min(6),
+			confirmPassword: Yup.string()
+				.required("Confirm password is required")
+				.oneOf([Yup.ref("password"), null], "Passwords must match")
+				.min(6),
+		}),
+		onSubmit: async (values) => {
+			setLoading(true);
+			console.log(values,googleData.firstName);
+			await postData("/auth/google-auth", {
+				firstName: googleData?.firstName,
+				lastName: googleData?.lastName,
+				email: googleData?.email,
+				phoneNumber: "",
+				loginWith: 2,
+				image: googleData?.picture,
+				password: values?.password
+			}).then((data) => {
+				if (data.status == "success") {
+					toggleLogin(false);
+					toggleLoginSuccess(true);
+					updateUserCache(data.data);
+					Cookies.set("TOKEN", data.token);
+					Cookies.set("USER", JSON.stringify(data.data));
+				} else {
+					setMessage(data.message);
+				}
+			});
+		},
+	});
+
 	const loginWithGoogle = useGoogleLogin({
 		onSuccess: async (tokenResponse) => {
 			setLoading(true);
@@ -196,15 +268,25 @@ const LoginModal = () => {
 					},
 				})
 				.then(async (response) => {
+					const username = response.data?.given_name?.split(" ");
+					setGoogleData({
+						firstName: username[0],
+						lastName: username[1],
+						email: response.data?.email,
+						phoneNumber: "",
+						loginWith: 2,
+						image: response.data?.picture,
+					});
+				
 					await postData("/auth/google-auth", {
 						firstName: response.data?.given_name,
 						lastName: response.data?.family_name,
 						email: response.data?.email,
 						phoneNumber: "",
 						loginWith: 2,
+						password: "12345678",
 						image: response.data?.picture,
 					}).then((data) => {
-						console.log(data);
 						if (data.status == "success") {
 							toggleLogin(false);
 							toggleLoginSuccess(true);
@@ -213,6 +295,7 @@ const LoginModal = () => {
 							Cookies.set("USER", JSON.stringify(data.data));
 						} else {
 							setMessage(data.message);
+							setModalTitle("PASSWORD_GOOGLE");
 						}
 					});
 				})
@@ -339,9 +422,10 @@ const LoginModal = () => {
 		setLoading(true);
 		await postData("/auth/send-phone-code", { phoneNumber: registerSubmit.values?.phoneNumber, verifyType: "REGISTER" })
 			.then((data) => {
+				setLoading(false);
+				setShowOTP(true);
 				if (data.status == "success") {
-					setLoading(false);
-					setShowOTP(true);
+					
 				} else {
 					setRegisterMsg(data.message);
 				}
@@ -350,30 +434,45 @@ const LoginModal = () => {
 			.catch((e) => setLoading(false));
 	};
 
+	// const onOTPVerifyPhone = async () => {
+	// 	setOtpLoading(true);
+	// 	await postData("/auth/verify-phone-code", { phoneNumber: registerSubmit.values?.phoneNumber, verificationCode: otp })
+	// 		.then(async (data) => {
+	// 			if (data.status == "success") {
+	// 				setLoading(true);
+	// 				setShowOTP(false);
+	// 				await postData("/auth/register-web", registerSubmit.values)
+	// 					.then((data) => {
+	// 						if (data.status == "success") {
+	// 							setModalTitle("SIGN_IN");
+	// 							registerSubmit.resetForm();
+	// 						} else {
+	// 							setMessage(data.message);
+	// 						}
+	// 						setLoading(false);
+	// 					})
+	// 					.catch((e) => setLoading(false));
+	// 			} else {
+	// 				setMessage(data.message);
+	// 			}
+	// 			setOtpLoading(false);
+	// 		})
+	// 		.catch((e) => setOtpLoading(false));
+	// };
+
 	const onOTPVerifyPhone = async () => {
-		setOtpLoading(true);
-		await postData("/auth/verify-phone-code", { phoneNumber: registerSubmit.values?.phoneNumber, verificationCode: otp })
-			.then(async (data) => {
+		setLoading(true);
+		await postData("/auth/register-web", registerSubmit.values)
+			.then((data) => {
 				if (data.status == "success") {
-					setLoading(true);
-					setShowOTP(false);
-					await postData("/auth/register-web", registerSubmit.values)
-						.then((data) => {
-							if (data.status == "success") {
-								setModalTitle("SIGN_IN");
-								registerSubmit.resetForm();
-							} else {
-								setMessage(data.message);
-							}
-							setLoading(false);
-						})
-						.catch((e) => setLoading(false));
+					setModalTitle("SIGN_IN");
+					registerSubmit.resetForm();
 				} else {
 					setMessage(data.message);
 				}
-				setOtpLoading(false);
+				setLoading(false);
 			})
-			.catch((e) => setOtpLoading(false));
+			.catch((e) => setLoading(false));
 	};
 
 	const onSignupWithEmail = async () => {
@@ -391,30 +490,45 @@ const LoginModal = () => {
 			.catch((e) => setLoading(false));
 	};
 
+	// const onOTPVerifyEmail = async () => {
+	// 	setOtpLoading(true);
+	// 	await postData("/auth/verify-code", { email: registerSubmit.values?.email, code: otp })
+	// 		.then(async (data) => {
+	// 			if (data.status == "success") {
+	// 				setLoading(true);
+	// 				setShowOTP(false);
+	// 				await postData("/auth/register-web", registerSubmit.values)
+	// 					.then((data) => {
+	// 						if (data.status == "success") {
+	// 							setModalTitle("SIGN_IN");
+	// 							registerSubmit.resetForm();
+	// 						} else {
+	// 							setMessage(data.message);
+	// 						}
+	// 						setLoading(false);
+	// 					})
+	// 					.catch((e) => setLoading(false));
+	// 			} else {
+	// 				setMessage(data.message);
+	// 			}
+	// 			setOtpLoading(false);
+	// 		})
+	// 		.catch((e) => setOtpLoading(false));
+	// };
+
 	const onOTPVerifyEmail = async () => {
-		setOtpLoading(true);
-		await postData("/auth/verify-code", { email: registerSubmit.values?.email, code: otp })
-			.then(async (data) => {
+		setLoading(true);
+		await postData("/auth/register-web", registerSubmit.values)
+			.then((data) => {
 				if (data.status == "success") {
-					setLoading(true);
-					setShowOTP(false);
-					await postData("/auth/register-web", registerSubmit.values)
-						.then((data) => {
-							if (data.status == "success") {
-								setModalTitle("SIGN_IN");
-								registerSubmit.resetForm();
-							} else {
-								setMessage(data.message);
-							}
-							setLoading(false);
-						})
-						.catch((e) => setLoading(false));
+					setModalTitle("SIGN_IN");
+					registerSubmit.resetForm();
 				} else {
 					setMessage(data.message);
 				}
-				setOtpLoading(false);
+				setLoading(false);
 			})
-			.catch((e) => setOtpLoading(false));
+			.catch((e) => setLoading(false));
 	};
 
 	const onOtpVerifyEmailForgotPass = async () => {
@@ -611,19 +725,19 @@ const LoginModal = () => {
 					<div
 						className="login__modal--left"
 						style={{
-							backgroundImage: "url('https://res.cloudinary.com/dufghzvge/image/upload/v1704773272/we-inspire-img.7547ff8e_n0crhj_yerfjd.jpg')",
+							backgroundImage: `url('${homepage?.thumbnailSeven ? api.RESOURCE + homepage?.thumbnailSeven : "https://res.cloudinary.com/dufghzvge/image/upload/v1704773272/we-inspire-img.7547ff8e_n0crhj_yerfjd.jpg"}')`,
 						}}
 					>
 						<div className="login__modal--header" onClick={() => toggleLogin()}>
 							<Image src={BrandLogo.src} alt="" />
-							<div className="login__modal--header-contain">
+							{/* <div className="login__modal--header-contain">
 								<h1>សមាគម អភិវឌ្ឍន៍ កុមារ</h1>
 								<h2>Children Development Association</h2>
-							</div>
+							</div> */}
 						</div>
 						<div className="login__modal--footer">
 							<p>
-								© Copyright 2023 Children Development Association | Designed by{" "}
+								© Copyright 2023 Alumni Cambodia | Designed by{" "}
 								<a target="_blank" rel="noreferrer" href="https://www.camgotech.com">
 									www.camgotech.com
 								</a>
@@ -916,6 +1030,52 @@ const LoginModal = () => {
 									</button>
 								</Form>
 							) : null}
+							{
+								modalTitle === "PASSWORD_GOOGLE" ? (
+									<Form onSubmit={googleSubmit.handleSubmit} className="login__modal--form">
+										<h3>Enter Password</h3>
+										<Form.Group className="mb-3 input-icon" controlId="formGroupPassword">
+											<Form.Label>Password</Form.Label>
+											<Form.Control
+												type={type3}
+												placeholder="Password (6 characters)"
+												autoComplete="new-password"
+												name="password"
+												onChange={googleSubmit.handleChange}
+												value={googleSubmit.values.password}
+												isInvalid={googleSubmit.errors.password}
+											/>
+											<i className={`far ${icon3}`} style={{ right: googleSubmit.errors.password ? "30px" : "20px" }} onClick={() => handleToggle3()}></i>
+										</Form.Group>
+										<Form.Group className="mb-2 input-icon" controlId="formGroupPassword">
+											<Form.Label>Confirm Password</Form.Label>
+											<Form.Control
+												type={type4}
+												placeholder="Password (6 characters)"
+												autoComplete="new-password"
+												name="confirmPassword"
+												onChange={googleSubmit.handleChange}
+												value={googleSubmit.values.confirmPassword}
+												isInvalid={googleSubmit.errors.confirmPassword}
+											/>
+											<i
+												className={`far ${icon4}`}
+												style={{ right: googleSubmit.errors.confirmPassword ? "30px" : "20px" }}
+												onClick={() => handleToggle4()}
+											></i>
+										</Form.Group>
+										
+										{googleSubmit.errors.confirmPassword == "Passwords must match" ? (
+											<span className="text-danger" style={{ fontSize: "10px" }} type="invalid">
+												{googleSubmit.errors.confirmPassword}
+											</span>
+										) : null}
+										<button type="submit" className="thm-btn">
+											Submit
+										</button>
+									</Form>
+								) : ""
+							}
 						</Container>
 					</div>
 				</div>

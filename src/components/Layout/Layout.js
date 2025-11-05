@@ -10,6 +10,7 @@ import Search from "../Search/Search";
 import SiteFooter from "../SiteFooter/SiteFooter";
 import DonationModal from "../Donation/DonationModal";
 import LoginModal from "../Account/LoginModal";
+import brandLogo from "../../assets/images/LOGO-CAA New.png";
 
 const Layout = ({ children, pageTitle }) => {
 	const [loading, setLoading] = useState(false);
@@ -26,7 +27,7 @@ const Layout = ({ children, pageTitle }) => {
 		<>
 			<Head>
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-				<title>{pageTitle} | Children Development Association (CDA)</title>
+				<title>{pageTitle} | Alumni</title>
 			</Head>
 			<Preloader loading={loading} />
 			<main id="wrapper" style={{ opacity: loading ? 0 : 1 }} className="page-wrapper">

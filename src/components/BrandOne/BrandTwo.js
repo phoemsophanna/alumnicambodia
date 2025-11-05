@@ -43,7 +43,7 @@ const BrandTwo = ({ brandClass = "", partners = [] }) => {
 				<div className="section-title text-center">
 					<span className="section-title__tagline with-right">{t("general.OurPartner")}</span>
 				</div>
-				<Row>
+				<Row className="justify-content-between">
                     {partners.map((item, index) => (
                         <Col xl={2} md={3} sm={4} xs={6} key={index}>
                             <div style={{ userSelect: "none" }} className="brand-one__single">

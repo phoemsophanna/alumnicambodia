@@ -11,6 +11,8 @@ import ReactVisibilitySensor from "react-visibility-sensor";
 import { api } from "src/config";
 import Select from "react-select";
 import Swal from "sweetalert2";
+import locations from "@/data/location";
+import * as Yup from "yup";
 // Import React FilePond
 import { FilePond, registerPlugin } from "react-filepond";
 
@@ -20,6 +22,7 @@ import "filepond/dist/filepond.min.css";
 import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
+import { useTranslation } from "react-i18next";
 // Register the plugins
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 
@@ -28,10 +31,16 @@ const Dashboard = () => {
 		{ value: "ID_CARD", label: "Identity Card" },
 		{ value: "PASSPORT", label: "Passport Card" },
 	];
+	const options3 = [
+		{ value: "male", label: "Male" },
+		{ value: "female", label: "Female" },
+	];
 	const [documentType, setDocumentType] = useState({ value: "ID_CARD", label: "Identity Card" });
+	const [genderType, setGenderType] = useState({ value: "female", label: "Female" });
 	const [idCardFront, setIdCardFront] = useState([]);
 	const [idCardBack, setIdCardBack] = useState([]);
 	const [passport, setPassport] = useState([]);
+	const [location, setLocation] = useState();
 	const [campaignRecord, setCampaignRecord] = useState({
 		pending: 0,
 		draft: 0,
@@ -45,12 +54,16 @@ const Dashboard = () => {
 	const [countStart, setCountStart] = useState(false);
 	const [activeTabClasses, setActive] = useState(1);
 	const { updateUserCache } = useRootContext();
+	const {t} = useTranslation();
 	const [user, setUser] = useState(null);
+	const [information, setInformation] = useState(null);
 	const token = Cookies.get("TOKEN");
 	const router = useRouter();
 	const [isLoadingList, setLoadingList] = useState(false);
 	const [fileProfile, setFileProfile] = useState([]);
-
+	const [address, setAddress] = useState({});
+	const [againstHumanity, setAgainstHumanity] = useState({});
+	const [politicalUse, setPoliticalUse] = useState({});
 	const fetchCampaignList = async (status) => {
 		setLoadingList(true);
 		setCampaignList([]);
@@ -141,6 +154,9 @@ const Dashboard = () => {
 		});
 	};
 
+	const [toggleEditProfile, setToggleEditProfile] = useState(false);
+	const [loadingSave, setLoadingSave] = useState(false);
+
 	useEffect(async () => {
 		if (token) {
 			let config = {
@@ -165,6 +181,28 @@ const Dashboard = () => {
 					console.log(error);
 					router.replace("/");
 				});
+
+			let configInformation = {
+				method: "get",
+				maxBodyLength: Infinity,
+				url: `${api.BASE_URL}/auth/user-information`,
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`,
+				},
+			};
+
+			await axios
+				.request(configInformation)
+				.then((response) => {
+					console.log(response.data);
+					setInformation(response.data);
+					setAddress(JSON.parse(response?.data?.city ? response?.data?.city : "{}"));
+				})
+				.catch((error) => {
+					console.log(error);
+					router.replace("/");
+				});
 			fetchCampaignList();
 		} else {
 			router.replace("/");
@@ -172,16 +210,13 @@ const Dashboard = () => {
 		return () => {
 			setCampaignList([]);
 		};
-	}, [token]);
+	}, [token,toggleEditProfile]);
 
 	const onVisibilityChange = (isVisible) => {
 		if (isVisible) {
 			setCountStart(true);
 		}
 	};
-
-	const [toggleEditProfile, setToggleEditProfile] = useState(false);
-	const [loadingSave, setLoadingSave] = useState(false);
 
 	const campaignForm = useFormik({
 		initialValues: {
@@ -195,16 +230,31 @@ const Dashboard = () => {
 			idCardBack: user?.idCardBack || "",
 			idCardFront: user?.idCardFront || "",
 			passport: user?.passport || "",
-			accountName: user?.accountName || "",
-			accountNumber: user?.accountNumber || "",
+			fullname: information?.fullname || "",
+			gender: information?.gender || "",
+			age: information?.age || "",
+			city: information?.city || "",
+			date: information?.date || "",
+			location: information?.location || "",
+			houseNumber: address?.houseNumber || "",
+			streetNumber: address?.streetNumber || "",
+			teamNumber: address?.teamNumber || "",
+			phum: address?.phum || "",
+			sangkat: address?.sangkat || "",
+			khan: address?.khan || "",
 		},
 		onSubmit: async (values) => {
+			console.log(values);
 			values.image = fileProfile?.length > 0 ? fileProfile[0]?.serverId || fileProfile[0]?.source : "";
 			values.idCardBack = idCardBack?.length > 0 ? idCardBack[0]?.serverId || idCardBack[0]?.source : "";
 			values.idCardFront = idCardFront?.length > 0 ? idCardFront[0]?.serverId || idCardFront[0]?.source : "";
 			values.passport = passport?.length > 0 ? passport[0]?.serverId || passport[0]?.source : "";
 			values.idType = documentType.value || "";
-			console.log(values);
+			values.gender = genderType.value || "",
+			values.location = location ? location.value : "";
+			values.city = {houseNumber: values?.houseNumber,streetNumber: values?.streetNumber,teamNumber: values?.teamNumber,phum: values?.phum,sangkat: values?.sangkat,khan: values?.khan};
+			values.politicalUse = politicalUse;
+			values.againstHumanity = againstHumanity;
 			setLoadingSave(true);
 			await axios
 				.request({
@@ -224,7 +274,8 @@ const Dashboard = () => {
 						response.data.data.image = response.data.data.image
 							? response.data.data.image
 							: "https://res.cloudinary.com/dufghzvge/image/upload/v1719182746/default-profile-picture-avatar-photo-placeholder-vector-illustration-default-profile-picture-avatar-photo-placeholder-vector-189495158_hyq2qt.webp";
-						setUser(response.data.data);
+						// setUser(response.data.data);
+						// setInformation(response.data.info);
 					}
 				})
 				.catch((error) => {
@@ -238,18 +289,34 @@ const Dashboard = () => {
 
 	useEffect(() => {
 		setFileProfile(user?.image ? [{ source: user?.image, options: { type: "local" } }] : []);
-		setIdCardFront(user?.idCardBack ? [{ source: user?.idCardBack, options: { type: "local" } }] : []);
+		setIdCardFront(user?.idCardFront ? [{ source: user?.idCardFront, options: { type: "local" } }] : []);
 		setIdCardBack(user?.idCardBack ? [{ source: user?.idCardBack, options: { type: "local" } }] : []);
 		setPassport(user?.passport ? [{ source: user?.passport, options: { type: "local" } }] : []);
+		setDocumentType(user?.idType === "ID_CARD" ? { value: "ID_CARD", label: "Identity Card" } : { value: "PASSPORT", label: "Passport Card" });
+		setGenderType(information?.gender === "male" ? { value: "male", label: "Male" } : { value: "female", label: "Famale" });
+		setAgainstHumanity(information?.againstHumanity);
+		setPoliticalUse(information?.politicalUse);
+		console.log(user?.idType === "ID_CARD",information?.gender === "male");
 		campaignForm.values.firstName = user?.firstName;
 		campaignForm.values.lastName = user?.lastName;
 		campaignForm.values.email = user?.email;
 		campaignForm.values.phoneNumber = user?.phoneNumber;
-		campaignForm.values.accountName = user?.accountName;
-		campaignForm.values.accountNumber = user?.accountNumber;
 		campaignForm.values.idNumber = user?.idNumber;
 		campaignForm.values.idType = user?.idType;
-		setDocumentType(user?.idType === "ID_CARD" ? { value: "ID_CARD", label: "Identity Card" } : { value: "PASSPORT", label: "Passport Card" });
+		// Information
+		campaignForm.values.fullname = information?.fullname;
+		campaignForm.values.gender = information?.gender;
+		campaignForm.values.age = information?.age;
+		campaignForm.values.city = information?.city;
+		campaignForm.values.date = information?.date;
+		campaignForm.values.houseNumber = address?.houseNumber;
+		campaignForm.values.streetNumber = address?.streetNumber;
+		campaignForm.values.teamNumber = address?.teamNumber;
+		campaignForm.values.phum = address?.phum;
+		campaignForm.values.sangkat = address?.sangkat;
+		campaignForm.values.khan = address?.khan;
+		// campaignForm.values.location = information?.location;
+		setLocation({value: information?.location, label: information?.location});
 	}, [toggleEditProfile]);
 
 	const logOut = () => {
@@ -321,7 +388,7 @@ const Dashboard = () => {
 									<span className="icon-coin"></span>
 									<div className="total">
 										<p className="total-title">Total Donations</p>
-										<p className="total-balance">${user?.totalDonation?.toFixed(2) || 0.0}</p>
+										<p className="total-balance">${parseFloat(user?.totalDonation)?.toFixed(2) || 0.0}</p>
 									</div>
 								</div>
 							</>
@@ -393,7 +460,7 @@ const Dashboard = () => {
 										<Col lg={12}>
 											<FloatingLabel controlId="phoneNumber" label="Phone Number" className="mb-3">
 												<Form.Control
-													disabled={user?.loginWith == 1 ? true : false}
+													// disabled={user?.loginWith == 1 ? true : false}
 													name="phoneNumber"
 													type="text"
 													placeholder="Enter phone number"
@@ -403,113 +470,399 @@ const Dashboard = () => {
 											</FloatingLabel>
 										</Col>
 									</Row>
-									<div>
-										<label className="form-label main-label">Document Type</label>
-										<Select
-											options={options2}
-											className="campaign-select-input mb-2"
-											placeholder="Document Type"
-											onChange={setDocumentType}
-											defaultValue={documentType}
-											value={documentType}
-										/>
-										<div className="form-floating">
-											<input
-												type="text"
-												className="form-control"
-												id="id-number"
-												placeholder="ID / Passport Number"
-												name="idNumber"
-												onChange={campaignForm.handleChange}
-												value={campaignForm.values.idNumber}
-											/>
-											<label htmlFor="id-number">ID / Passport Number</label>
-										</div>
-										<Row className="mt-2" style={{ display: documentType?.value == "PASSPORT" ? "none" : "" }}>
-											<Col>
-												<FilePond
-													files={idCardFront}
-													onupdatefiles={setIdCardFront}
-													allowMultiple={true}
-													maxFiles={1}
-													storeAsFile={true}
-													server={`${api.BASE_URL}/save-image/campaign`}
-													name="file"
-													labelIdle='<span className="filepond--label-action">Upload Front ID Card</span>'
-													stylePanelLayout="compact"
-												/>
-											</Col>
-											<Col>
-												<FilePond
-													files={idCardBack}
-													onupdatefiles={setIdCardBack}
-													allowMultiple={true}
-													maxFiles={1}
-													storeAsFile={true}
-													server={`${api.BASE_URL}/save-image/campaign`}
-													name="file"
-													labelIdle='<span className="filepond--label-action">Upload Back ID Card</span>'
-													stylePanelLayout="compact"
-												/>
-											</Col>
-										</Row>
-										<Row className="mt-2" style={{ display: documentType?.value == "ID_CARD" ? "none" : "" }}>
-											<Col>
-												<FilePond
-													files={passport}
-													onupdatefiles={setPassport}
-													allowMultiple={true}
-													maxFiles={1}
-													storeAsFile={true}
-													server={`${api.BASE_URL}/save-image/campaign`}
-													name="file"
-													labelIdle='<span className="filepond--label-action">Upload Passport Identification Page</span>'
-													stylePanelLayout="compact"
-												/>
-											</Col>
-										</Row>
-									</div>
-									<div className="mb-3">
-										<label className="form-label main-label">Bank Account</label>
-										<Row>
-											<Col>
-												<div className="form-floating mb-2">
+									{
+										user?.isMember == 1 ? (
+											<Col md={12}>
+												<h2 className="section-title__title" style={{ fontSize: "33px" }}>
+													{t('general.personal_information')}
+												</h2>
+												<div className="mb-3">
+													<label for="phoneNumber" className="form-label main-label">
+														ទូរស័ព្ទលេខ
+													</label>
 													<input
 														type="text"
 														className="form-control"
-														id="account-name"
-														placeholder="Account Name"
-														name="accountName"
+														id="phoneNumber"
+														placeholder="ទូរស័ព្ទលេខ"
+														name="phoneNumber"
 														onChange={campaignForm.handleChange}
-														value={campaignForm.values.accountName}
+														value={campaignForm.values.phoneNumber}
 													/>
-													<label htmlFor="account-name">Account Name</label>
+													{campaignForm.errors.phoneNumber && campaignForm.touched.phoneNumber ? (
+														<div className="text-danger">{campaignForm.errors.phoneNumber}</div>
+													) : null}
 												</div>
-											</Col>
-											<Col>
-												<div className="form-floating">
+												<div className="mb-3">
+													<label for="fullName" className="form-label main-label">
+														ខ្ញុំបាទ/នាងខ្ញុំឈ្មោះ
+													</label>
 													<input
 														type="text"
 														className="form-control"
-														id="account-number"
-														placeholder="Account Number"
-														name="accountNumber"
+														id="fullname"
+														placeholder="ខ្ញុំបាទ/នាងខ្ញុំឈ្មោះ"
+														name="fullname"
 														onChange={campaignForm.handleChange}
-														value={campaignForm.values.accountNumber}
+														value={campaignForm.values.fullname}
 													/>
-													<label htmlFor="account-number">Account Number</label>
+													{campaignForm.errors.fullname && campaignForm.touched.fullname ? (
+														<div className="text-danger">{campaignForm.errors.fullname}</div>
+													) : null}
+												</div>
+												<div className="mb-3">
+													<label for="gender" className="form-label main-label">
+														ភេទ
+													</label>
+													<Select
+														options={options3}
+														className="campaign-select-input mb-2"
+														placeholder="ភេទ"
+														onChange={setGenderType}
+														defaultValue={genderType}
+													/>
+												</div>
+												<div className="mb-3">
+													<label for="age" className="form-label main-label">
+														អាយុ
+													</label>
+													<input
+														type="text"
+														className="form-control"
+														id="age"
+														placeholder="អាយុ"
+														name="age"
+														onChange={campaignForm.handleChange}
+														value={campaignForm.values.age}
+													/>
+													{campaignForm.errors.age && campaignForm.touched.age ? (
+														<div className="text-danger">{campaignForm.errors.age}</div>
+													) : null}
+												</div>
+												<div className="mb-3">
+													<label className="form-label main-label">ប្រភេទអត្តសញ្ញាណ</label>
+													<Select
+														options={options2}
+														className="campaign-select-input mb-2"
+														placeholder="Document Type"
+														onChange={setDocumentType}
+														value={documentType}
+													/>
+													<div className="form-floating">
+														<input
+															type="text"
+															className="form-control"
+															id="id-number"
+															placeholder="ID / Passport Number"
+															name="idNumber"
+															onChange={campaignForm.handleChange}
+															value={campaignForm.values.idNumber}
+														/>
+														<label for="id-number">លេខអត្តសញ្ញាណប័ណ្ណ / លេខលិខិតឆ្លងដែន</label>
+														{campaignForm.errors.idNumber && campaignForm.touched.idNumber ? (
+															<div className="text-danger">{campaignForm.errors.idNumber}</div>
+														) : null}
+													</div>
+													<Row className="mt-2" style={{ display: documentType?.value == "ID_CARD" ? "" : "none" }}>
+														<Col>
+															<FilePond
+																files={idCardFront}
+																onupdatefiles={setIdCardFront}
+																allowMultiple={true}
+																maxFiles={1}
+																storeAsFile={true}
+																server={`${api.BASE_URL}/save-image/users`}
+																name="file"
+																labelIdle='<span className="filepond--label-action">Upload Front ID Card</span>'
+																stylePanelLayout="compact"
+															/>
+														</Col>
+														<Col>
+															<FilePond
+																files={idCardBack}
+																onupdatefiles={setIdCardBack}
+																allowMultiple={true}
+																maxFiles={1}
+																storeAsFile={true}
+																server={`${api.BASE_URL}/save-image/users`}
+																name="file"
+																labelIdle='<span className="filepond--label-action">Upload Back ID Card</span>'
+																stylePanelLayout="compact"
+															/>
+														</Col>
+														<div style={{display: `${idCardFront.length > 0 ? "none" : "block"}`}} className="text-danger">
+															សូមបំពេញរូបភាពអត្តសញ្ញាណប័ណ្ណផ្ទៃខាងមុខចាំបាច់ !
+														</div>
+													</Row>
+													<Row className="mt-2" style={{ display: documentType?.value == "PASSPORT" ? "" : "none" }}>
+														<Col>
+															<FilePond
+																files={passport}
+																onupdatefiles={setPassport}
+																allowMultiple={true}
+																maxFiles={1}
+																storeAsFile={true}
+																server={`${api.BASE_URL}/save-image/users`}
+																name="file"
+																labelIdle='<span className="filepond--label-action">Upload Passport Identification Page</span>'
+																stylePanelLayout="compact"
+															/>
+														</Col>
+														<div style={{display: `${passport.length > 0 ? "none" : "block"}`}} className="text-danger">
+															សូមបំពេញរូបភាពលិខិតឆ្លងដែនផ្ទៃខាងមុខចាំបាច់ !
+														</div>
+													</Row>
+												</div>
+												<div className="mb-3">
+													<label for="exampleFormControlInput1" className="form-label main-label">
+														រាជធានី/ខេត្ត
+													</label>
+													<div className="form-group">
+														{/* <input
+															type="text"
+															className="form-control"
+															placeholder="Location"
+															aria-label="location"
+															aria-describedby="button-addon2"
+															name="location"
+															onChange={campaignForm.handleChange}
+															value={campaignForm.values.location}
+														/> */}
+														<Select
+															options={locations}
+															className="campaign-select-input"
+															placeholder="រាជធានី/ខេត្ត"
+															isClearable={true}
+															isSearchable={true}
+															onChange={setLocation}
+															name="location"
+															value={location}
+														/>
+													</div>
+													{campaignForm.errors.location && campaignForm.touched.location ? (
+														<div className="text-danger">{campaignForm.errors.location}</div>
+													) : null}
+												</div>
+												<div className="mb-3">
+													<label for="creatorCity" className="form-label main-label">
+														ទីលំនៅបច្ចុប្បន្ន
+													</label>
+													<div className="row g-3">
+														<Col md={6} style={{display: "flex",alignItems: "center",gap: "5px"}}>
+															<label style={{marginBottom: 0,fontSize: "14px",fontWeight: "600",flex: "40%"}}>ផ្ទះលេខ</label>
+															<input
+																type="text"
+																className="form-control"
+																id="houseNumber"
+																placeholder="ផ្ទះលេខ"
+																name="houseNumber"
+																onChange={campaignForm.handleChange}
+																value={campaignForm?.values?.houseNumber}
+															/>
+															{campaignForm.errors.houseNumber && campaignForm.touched.houseNumber ? (
+																<div className="text-danger">{campaignForm.errors.houseNumber}</div>
+															) : null}
+														</Col>
+														<Col md={6} style={{display: "flex",alignItems: "center",gap: "5px"}}>
+															<label style={{marginBottom: 0,fontSize: "14px",fontWeight: "600",flex: "40%"}}>ផ្លូវលេខ</label>
+															<input
+																type="text"
+																className="form-control"
+																id="streetNumber"
+																placeholder="ផ្លូវលេខ"
+																name="streetNumber"
+																onChange={campaignForm.handleChange}
+																value={campaignForm?.values?.streetNumber}
+															/>
+														</Col>
+														<Col md={6} style={{display: "flex",alignItems: "center",gap: "5px"}}>
+															<label style={{marginBottom: 0,fontSize: "14px",fontWeight: "600",flex: "40%"}}>ក្រុមទី</label>
+															<input
+																type="text"
+																className="form-control"
+																id="teamNumber"
+																placeholder="ក្រុមទី"
+																name="teamNumber"
+																onChange={campaignForm.handleChange}
+																value={campaignForm?.values?.teamNumber}
+															/>
+														</Col>
+														<Col md={6} style={{display: "flex",alignItems: "center",gap: "5px"}}>
+															<label style={{marginBottom: 0,fontSize: "14px",fontWeight: "600",flex: "40%"}}>ភូមិ</label>
+															<input
+																type="text"
+																className="form-control"
+																id="phum"
+																placeholder="ភូមិ"
+																name="phum"
+																onChange={campaignForm.handleChange}
+																value={campaignForm?.values?.phum}
+															/>
+														</Col>
+														<Col md={6} style={{display: "flex",alignItems: "center",gap: "5px"}}>
+															<label style={{marginBottom: 0,fontSize: "14px",fontWeight: "600",flex: "40%"}}>ឃុំ/សង្កាត់</label>
+															<input
+																type="text"
+																className="form-control"
+																id="sangkat"
+																placeholder="ឃុំ/សង្កាត់"
+																name="sangkat"
+																onChange={campaignForm.handleChange}
+																value={campaignForm?.values?.sangkat}
+															/>
+														</Col>
+														<Col md={6} style={{display: "flex",alignItems: "center",gap: "5px"}}>
+															<label style={{marginBottom: 0,fontSize: "14px",fontWeight: "600",flex: "40%"}}>ស្រុក/ខណ្ឌ</label>
+															<input
+																type="text"
+																className="form-control"
+																id="khan"
+																placeholder="ស្រុក/ខណ្ឌ"
+																name="khan"
+																onChange={campaignForm.handleChange}
+																value={campaignForm?.values?.khan}
+															/>
+														</Col>
+													</div>
+												</div>
+												<div className="mb-3">
+													<label for="date" className="form-label main-label">
+														ថ្ងៃធ្វើលិខិត
+													</label>
+													<input
+														type="date"
+														className="form-control"
+														id="date"
+														placeholder="Date"
+														name="date"
+														onChange={campaignForm.handleChange}
+														value={campaignForm.values.date}
+													/>
+												</div>
+												<div className="mb-3">
+													<label for="date" className="form-label main-label">
+														តើអ្នកបាននិងកំពុងចូលរួមសកម្មភាពបម្រើឲ្យចលនាណាមួយនៅក្រៅប្រទេស ឬក្នុងប្រទេស ដើម្បី ប្រឆាំងនឹងមនុស្សជាតិដែរឬទេ?
+													</label>
+													<div className="row">
+														<div style={{display: "flex",alignItems: "center",gap: "5px", flex: "25%", maxWidth: "25%"}}>
+															<input
+																style={{width: "25px",height: "25px"}}
+																type="radio"
+																id="agree"
+																name="againstHumanity"
+																value="agree"
+																checked={againstHumanity == "agree"}
+																onChange={(e) => setAgainstHumanity(e.target.value)}
+															/>
+															<label htmlFor="agree" style={{marginBottom: 0,fontSize: "14px",fontWeight: "600"}}>បានចូលរួម</label>
+														</div>
+														<div style={{display: "flex",alignItems: "center",gap: "5px",flex: "26%", maxWidth: "26%"}}>
+															<input
+																style={{width: "25px",height: "25px"}}
+																type="radio"
+																id="disagree"
+																name="againstHumanity"
+																value="disagree"
+																checked={againstHumanity == "disagree"}
+																onChange={(e) => setAgainstHumanity(e.target.value)}
+															/>
+															<label  htmlFor="disagree" style={{marginBottom: 0,fontSize: "14px",fontWeight: "600"}}>មិនបានចូលរួម</label>
+														</div>
+													</div>
+													<div style={{display: `${againstHumanity ? "none" : "block"}`}} className="text-danger">
+														សូមបំពេញព័ត៌មាននៅខាងលើនេះដោយត្រឹមត្រូវ!
+													</div>
+												</div>
+												<div className="mb-3">
+													<label for="date" className="form-label main-label">
+														ខ្ញុំបាទ/នាងខ្ញុំសុំធានា និងអះអាងថា មិនយកតួនាទីជាសមាជិក ឫសកម្មភាពសមាគម ទៅបម្រើផល ប្រយោជន៍ឲ្យគណបក្សនយោបាយណាមួយឡើយ ។ <br />
+														ខ្ញុំបាទ/នាងខ្ញុំ សូមធានា និងអះអាងថា អ្វីដែលបានរាបរាប់ខាងលើសុទ្ធតែជាការពិតទាំងអស់ បើសិន មានចំណុចណាមួយមិនពិត ខ្ញុំបាទ/នាងខ្ញុំសូមទទួលខុសត្រូវចំពោះមុខច្បាប់ជាធរមានដោយខ្លួនឯង ។
+													</label>
+													<div className="row">
+														<div style={{display: "flex",alignItems: "center",gap: "5px", flex: "25%", maxWidth: "25%"}}>
+															<input
+																style={{width: "25px",height: "25px"}}
+																type="radio"
+																id="accept"
+																name="politicalUse"
+																value="accept"
+																checked={politicalUse == "accept"}
+																onChange={(e) => setPoliticalUse(e.target.value)}
+															/>
+															<label htmlFor="accept" style={{marginBottom: 0,fontSize: "14px",fontWeight: "600"}}>យល់ព្រម</label>
+														</div>
+														<div style={{display: "flex",alignItems: "center",gap: "5px",flex: "26%", maxWidth: "26%"}}>
+															<input
+																style={{width: "25px",height: "25px"}}
+																type="radio"
+																id="reject"
+																name="politicalUse"
+																value="reject"
+																checked={politicalUse == "reject"}
+																onChange={(e) => setPoliticalUse(e.target.value)}
+															/>
+															<label  htmlFor="reject" style={{marginBottom: 0,fontSize: "14px",fontWeight: "600"}}>មិនយល់ព្រម</label>
+														</div>
+													</div>
+													<div style={{display: `${politicalUse ? "none" : "block"}`}} className="text-danger">
+														សូមបំពេញព័ត៌មាននៅខាងលើនេះដោយត្រឹមត្រូវ!
+													</div>
 												</div>
 											</Col>
-										</Row>
-									</div>
-									<button type="submit" className="btn-thm-small">
-										{loadingSave ? (
-											<Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+										) : ""
+									}
+									{
+										documentType?.value == "ID_CARD" ? (
+											<>
+												{
+													idCardFront.length > 0 && againstHumanity && politicalUse ? (
+														<button type="submit" className="btn-thm-small">
+															{loadingSave ? (
+																<Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+															) : (
+																<i className="fas fa-save"></i>
+															)}{" "}
+															Save
+														</button>
+													) : (
+														<button type="submit" disabled style={{backgroundColor: "grey"}} className="btn-thm-small">
+															{loadingSave ? (
+																<Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+															) : (
+																<i className="fas fa-save"></i>
+															)}{" "}
+															Save
+														</button>
+													)
+												}
+											</>
 										) : (
-											<i className="fas fa-save"></i>
-										)}{" "}
-										Save
-									</button>{" "}
+											<>
+												{
+													passport.length > 0 && againstHumanity && politicalUse ? (
+														<button type="submit" className="btn-thm-small">
+															{loadingSave ? (
+																<Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+															) : (
+																<i className="fas fa-save"></i>
+															)}{" "}
+															Save
+														</button>
+													) : (
+														<button type="submit" disabled style={{backgroundColor: "grey"}} className="btn-thm-small">
+															{loadingSave ? (
+																<Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+															) : (
+																<i className="fas fa-save"></i>
+															)}{" "}
+															Save
+														</button>
+													)
+												}
+											</>
+										)
+									}
+									{"  "}
 									<button type="button" className="btn-thm-outline-small" onClick={() => setToggleEditProfile((currentToggle) => !currentToggle)}>
 										<i className="fas fa-angle-left"></i> Back to profile
 									</button>
@@ -522,11 +875,30 @@ const Dashboard = () => {
 						<span className="icon-coin"></span>
 						<div className="total">
 							<p className="total-title">Total Donations</p>
-							<p className="total-balance">${user?.totalDonation?.toFixed(2) || 0.0}</p>
+							<p className="total-balance">${parseFloat(user?.totalDonation)?.toFixed(2) || 0.0}</p>
 						</div>
 					</div>
+					
+					{
+						user?.isMember != 1 ? (
+							<div className="dashboard-body">
+								<h2 className="section-title__title text-center">{t('general.for_membership')}</h2>
+								<p className="total-balance text-center">
+									Join the community to get benefit our country
+								</p>
+								<div className="text-center">
+									<Link href="/form-information">
+										<a className="main-menu__donate-btn" style={{ display: "inline-block", border: "none" }}>
+											Join a Member Now
+										</a>
+									</Link>
+								</div>
+							</div>
+						) : ""
+					}
+					
 
-					<div className="dashboard-body">
+					{/* <div className="dashboard-body">
 						<div className="dashboard-body-header">
 							<div className="dashboard-data-record">
 								<div className="record-item">
@@ -1143,7 +1515,7 @@ const Dashboard = () => {
 								</Tab.Pane>
 							</Tab.Content>
 						</Tab.Container>
-					</div>
+					</div> */}
 				</Container>
 			</section>
 		</Layout>
