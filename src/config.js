@@ -1,8 +1,8 @@
 export const api = {
-    // BASE_URL: "https://api.cambodiaalumni.org/api",
-    // RESOURCE: "https://api.cambodiaalumni.org/uploads",
-    BASE_URL: "https://apicaa.acitycloud.com/api",
-    RESOURCE: "https://apicaa.acitycloud.com/uploads",
+    BASE_URL: "https://api.cambodiaalumni.org/api",
+    RESOURCE: "https://api.cambodiaalumni.org/uploads",
+    // BASE_URL: "https://apicaa.acitycloud.com/api",
+    // RESOURCE: "https://apicaa.acitycloud.com/uploads",
     // BASE_URL: "http://127.0.0.1:8000/api",
     // RESOURCE: "http://127.0.0.1:8000/uploads",
     // BASE_URL: "https://apicda.cinvoice.com/api",
