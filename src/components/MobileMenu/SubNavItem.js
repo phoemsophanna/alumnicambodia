@@ -13,7 +13,7 @@ const SubNavItem = ({ subItem = {} }) => {
   const { href, subItems, name } = subItem;
 
   return (
-    <li>
+    <li style={{paddingLeft: "10px"}}>
       <Link href={href}>
         <a className={expand && subItems?.length ? " expanded" : ""}>
           {name}

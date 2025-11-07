@@ -260,6 +260,7 @@ const HeaderOne = () => {
 								{/* <a href="#" className="main-menu__cart" onClick={() => toggleLogin()}>
 									<i className="far fa-user"></i>
 								</a> */}
+
 								{!userProfile ? (
 									<button className="main-menu__donate-btn" style={{ border: "none",whiteSpace: "nowrap" }} onClick={() => toggleLogin()}>
 										{/* <i className="far fa-user"></i> Login */}
@@ -284,6 +285,41 @@ const HeaderOne = () => {
 								{/* <button className="main-menu__donate-btn" style={{ border: "none" }} onClick={() => toggleDonation()}>
 									<i className="fa fa-heart"></i> Login
 								</button> */}
+							</div>
+						</div>
+
+						<div className={scrollTop ? "sticky-header__content mobile-menu main-menu__inner" : "main-menu__inner mobile-menu"}>
+							<div className="main-header__logo-mobile d-md-none d-block">
+								<Link href="/">
+									<a>
+										<Image src={brandLogo.src} alt="Alumni Logo" />
+									</a>
+								</Link>
+							</div>
+
+							<div className="main-menu__center">
+								{!userProfile ? (
+									<button className="main-menu__donate-btn" style={{ border: "none",whiteSpace: "nowrap" }} onClick={() => toggleLogin()}>
+										{/* <i className="far fa-user"></i> Login */}
+										<i className="far fa-user"></i> {t("general.MEMBER")}
+									</button>
+								) : (
+									<Link href="/dashboard">
+										<a className="main-menu__donate-btn" style={{ border: "none" }}>
+											<i className="far fa-user"></i> {userProfile?.firstName} {userProfile?.lastName}
+										</a>
+									</Link>
+								)}
+
+								<button className="main-menu__donate-btn" style={{ border: "none",marginLeft: "10px",whiteSpace: "nowrap" }} onClick={() => toggleDonation(true, mainCampaign?.id)}>
+									<i class="fas fa-dollar-sign"></i> {t("general.DONATION")}
+								</button>
+							</div>	
+
+							<div className="main-menu__right">
+								<span onClick={() => toggleMenu()} className="mobile-nav__toggler">
+									<i className="fa fa-bars"></i>
+								</span>
 							</div>
 						</div>
 					</nav>

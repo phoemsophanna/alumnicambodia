@@ -22,13 +22,17 @@ const NavItem = ({ item = {} }) => {
       <Link href={href}>
         <a className={expand ? " expanded" : ""}>
           {name}
-          <button
-            onClick={handleExpand}
-            ariaLabel="dropdown toggler"
-            className={expand ? "expanded" : ""}
-          >
-            <i className="fa fa-angle-down"></i>
-          </button>
+          {
+            subNavItems.length > 0 ? (
+              <button
+                onClick={handleExpand}
+                ariaLabel="dropdown toggler"
+                className={expand ? "expanded" : ""}
+              >
+                <i className="fa fa-angle-down"></i>
+              </button>
+            ) : ""
+          }
         </a>
       </Link>
       <ul

@@ -1375,8 +1375,10 @@ input[type="color"]:focus,
 }
 
 .mobile-nav__content {
-	width: 300px;
-	background-color: var(--thm-black);
+	/* width: 300px; */
+	width: 100%;
+	/* background-color: var(--thm-black); */
+	background-color: #ffff;
 	z-index: 10;
 	position: relative;
 	height: 100%;
@@ -1391,6 +1393,10 @@ input[type="color"]:focus,
 	padding: 8px 0;
 	width: 100%;
 	text-align: center;
+}
+
+.mobile-menu {
+	display: none;
 }
 
 .mobile-nav__content .logo-box {
