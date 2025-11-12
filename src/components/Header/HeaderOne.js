@@ -311,9 +311,47 @@ const HeaderOne = () => {
 									</Link>
 								)}
 
-								<button className="main-menu__donate-btn" style={{ border: "none",marginLeft: "10px",whiteSpace: "nowrap" }} onClick={() => toggleDonation(true, mainCampaign?.id)}>
+								<button className="main-menu__donate-btn" style={{ border: "none",marginLeft: "0px",whiteSpace: "nowrap" }} onClick={() => toggleDonation(true, mainCampaign?.id)}>
 									<i class="fas fa-dollar-sign"></i> {t("general.DONATION")}
 								</button>
+
+								<div class="dropdown" style={{alignItems: "center",marginTop: "5px"}}>
+									<button class="btn btn-secondary dropdown-toggle d-flex align-items-center" onClick={() => dropdownMenu()} style={{marginRight: "10px", padding: "5px",border: "1px solid #fff",background: "transparent",borderRadius: "20px"}} type="button" data-bs-toggle="dropdown" aria-expanded="false">
+										<Image src={lang === "KHM" ? (lang === "CH" ? ChinaFlag.src : KhmerFlag.src) : (lang === "CH" ? ChinaFlag.src : EnglishFlag.src)} alt="" style={{width: "20px",height: "20px"}} />
+									</button>
+									<ul class={`dropdown-menu ${dropdown ? 'show' : ''}`} style={{padding: ".5rem",minWidth: "auto",width: "100px"}}>
+										<li>
+											<a style={{display: "flex",width: "100%",alignItems: "center",gap: "5px",justifyContent: "start",paddingLeft: "0"}} class="dropdown-item d-flex align-items-center" href="#" onClick={() => onSelectLang("KHM")}>
+												<div>
+													<Image src={KhmerFlag.src} alt="" style={{width: "20px",height: "20px"}} />
+												</div>
+												<div style={{color: "#292d96",fontWeight: "700"}}>
+													{t('general.khmer')}
+												</div>
+											</a>
+										</li>
+										<li>
+											<a style={{display: "flex",width: "100%",alignItems: "center",gap: "5px",justifyContent: "start",paddingLeft: "0"}} class="dropdown-item d-flex align-items-center" href="#" onClick={() => onSelectLang("ENG")}>
+												<div className="image">
+													<Image src={EnglishFlag.src} alt="" style={{width: "20px",height: "20px"}} />
+												</div>
+												<div style={{color: "#292d96",fontWeight: "700"}}>
+													{t('general.english')}
+												</div>
+											</a>
+										</li>
+										<li>
+											<a style={{display: "flex",width: "100%",alignItems: "center",gap: "5px",justifyContent: "start",paddingLeft: "0"}} class="dropdown-item d-flex align-items-center" href="#" onClick={() => onSelectLang("CH")}>
+												<div>
+													<Image src={ChinaFlag.src} alt="" style={{width: "20px",height: "20px"}} />
+												</div>
+												<div style={{color: "#292d96",fontWeight: "700"}}>
+													{t('general.chinese')}
+												</div>
+											</a>
+										</li>
+									</ul>
+								</div>
 							</div>	
 
 							<div className="main-menu__right">

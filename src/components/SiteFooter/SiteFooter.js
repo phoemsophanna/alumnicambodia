@@ -28,6 +28,7 @@ const SiteFooter = () => {
 			})
 			.then((response) => {
 				setHomepage(response.data);
+				document.querySelector(".main-menu-wrapper__left-email-box .email a").innerHTML = response.data.titleBar;
 			})
 			.catch((e) => {
 				console.error(e);
