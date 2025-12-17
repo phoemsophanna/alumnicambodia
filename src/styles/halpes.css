@@ -1688,7 +1688,7 @@ input[type="color"]:focus,
 	}
 
 	.page-header {
-		height: 180px;
+		height: 120px;
 	}
 
 	.page-header__bg {
@@ -1700,8 +1700,8 @@ input[type="color"]:focus,
 	}
 
 	.page-header .container {
-		padding-top: 70px !important;
-		padding-bottom: 70px !important;
+		padding-top: 35px !important;
+		padding-bottom: 35px !important;
 	}
 
 	.about-page,.donors-page,.news-page,.contact-page {
@@ -8378,6 +8378,7 @@ input[type="color"]:focus,
 .login__modal--form .thm-btn {
 	padding: 12px;
 	width: 100%;
+	border-radius: 12px;
 	font-weight: 700;
 }
 
@@ -9308,7 +9309,7 @@ input[type="color"]:focus,
 	transition: background-color 0.3s, box-shadow 0.3s;
 	padding: 12px 16px 12px 42px;
 	border: none;
-	border-radius: 3px;
+	border-radius: 12px;
 	box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 1px 1px rgba(0, 0, 0, 0.25);
 	color: #757575;
 	font-size: 14px;
