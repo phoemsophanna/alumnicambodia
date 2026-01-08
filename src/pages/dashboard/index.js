@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Breadcrumb, Col, Container, FloatingLabel, Form, Image, Nav, Row, Spinner, Tab } from "react-bootstrap";
 import ReactVisibilitySensor from "react-visibility-sensor";
 import { api } from "src/config";
@@ -23,6 +23,7 @@ import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orien
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import { useTranslation } from "react-i18next";
+import DataTable from "react-data-table-component";
 // Register the plugins
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 
@@ -64,6 +65,7 @@ const Dashboard = () => {
 	const [address, setAddress] = useState({});
 	const [againstHumanity, setAgainstHumanity] = useState({});
 	const [politicalUse, setPoliticalUse] = useState({});
+	const [donorlist, setDonorlist] = useState([]);
 	const fetchCampaignList = async (status) => {
 		setLoadingList(true);
 		setCampaignList([]);
@@ -325,6 +327,69 @@ const Dashboard = () => {
 		router.replace("/");
 		updateUserCache(null);
 	};
+
+	useEffect(async () =>  {
+		if(user){
+			await axios.request({
+				method: "get",
+				maxBodyLength: Infinity,
+				url: `${api.BASE_URL}/user-donation/donorlist/${user.id}`,
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`
+				}
+			}).then((res) => {
+				setDonorlist(res.data.donors);
+			});
+		}
+	}, [user]);
+
+	console.log(donorlist);
+
+	const columns = useMemo(
+		() => [
+			{
+				name: "No",
+				selector: (row, index) => <strong>{index + 1}</strong>,
+				minWidth: "35px",
+				grow: 0,
+			},
+			{
+				name: "Project Name",
+				selector: (row) => row.campaign.campaignTile,
+				cell: (row) => (
+					<div className="table_title_img">
+						<div className="table_title">
+							<div className="text-truncate">
+								{JSON.parse(row.campaign.campaignTile) || "--/--"}
+							</div>
+						</div>
+					</div>
+				),
+				minWidth: "250px",
+				grow: 0,
+				sortable: true,
+			},
+			{
+				name: "Date",
+				selector: (row) => <span>{row.date}</span>,
+				sortable: true,
+			},
+			{
+				name: "Donation ($)",
+				selector: (row) => <span>${row.amount.toFixed(2)}</span>,
+				sortable: true,
+				minWidth: "200px",
+				grow: 0,
+			},
+			{
+				name: "Payment Option",
+				selector: (row) => <span>{row.paymentMethod}</span>,
+				sortable: true,
+				minWidth: "130px",
+			},
+		],
+	);
 
 	return (
 		<Layout pageTitle="Dashboard">
@@ -877,6 +942,29 @@ const Dashboard = () => {
 							<p className="total-title">Total Donations</p>
 							<p className="total-balance">${parseFloat(user?.totalDonation)?.toFixed(2) || 0.0}</p>
 						</div>
+					</div>
+
+					<div className="dashboard-body">
+						<h2 className="section-title__title">Donation List</h2>
+						<DataTable
+							customStyles={{
+								headCells: {
+									style: {
+										fontWeight: "bold",
+										fontSize: "13px",
+										paddingRight: "0px",
+									},
+								},
+								cells: {
+									style: {
+										paddingRight: "0px",
+									},
+								},
+							}}
+							columns={columns}
+							data={donorlist}
+							pagination
+						/>
 					</div>
 					
 					{
