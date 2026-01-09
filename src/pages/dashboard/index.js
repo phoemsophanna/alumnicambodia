@@ -361,7 +361,7 @@ const Dashboard = () => {
 					<div className="table_title_img">
 						<div className="table_title">
 							<div className="text-truncate">
-								{row.campaign.campaignTile ? JSON.parse(row?.campaign?.campaignTile) : "" || "--/--"}
+								{row.campaign ? row?.campaign?.campaignTile : "" || "--/--"}
 							</div>
 						</div>
 					</div>
