@@ -356,12 +356,12 @@ const Dashboard = () => {
 			},
 			{
 				name: "Project Name",
-				selector: (row) => row.campaign.campaignTile,
+				selector: (row) => row.campaign ? row?.campaign?.campaignTile : "",
 				cell: (row) => (
 					<div className="table_title_img">
 						<div className="table_title">
 							<div className="text-truncate">
-								{JSON.parse(row.campaign.campaignTile) || "--/--"}
+								{row.campaign.campaignTile ? JSON.parse(row?.campaign?.campaignTile) : "" || "--/--"}
 							</div>
 						</div>
 					</div>
@@ -945,7 +945,7 @@ const Dashboard = () => {
 					</div>
 
 					<div className="dashboard-body">
-						<h2 className="section-title__title">Donation List</h2>
+						<h2 className="section-title__title text-center">Donation List</h2>
 						<DataTable
 							customStyles={{
 								headCells: {
