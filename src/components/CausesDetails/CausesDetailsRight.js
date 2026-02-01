@@ -212,7 +212,7 @@ const CausesDetailsRight = ({ creator = null, campaignId = null, detail = null }
 				</Modal.Header>
 				<Modal.Body>
 					<FacebookShareButton
-						url={`https://demo.cdafund.org/projects/${campaignId}`}
+						url={`https://cambodiaalumni.org/projects/${campaignId}`}
 						quote={"CDA FUND Share"}
 						hashtag={"#CDAFUND"}
 						style={{ width: "100%" }}
@@ -223,7 +223,7 @@ const CausesDetailsRight = ({ creator = null, campaignId = null, detail = null }
 						</button>
 					</FacebookShareButton>
 					<TwitterShareButton
-						url={`https://demo.cdafund.org/projects/${campaignId}`}
+						url={`https://cambodiaalumni.org/projects/${campaignId}`}
 						title={detail?.title || ""}
 						style={{ width: "100%" }}
 						onClick={() => handleShareCampaign("TWITTER")}
@@ -233,7 +233,7 @@ const CausesDetailsRight = ({ creator = null, campaignId = null, detail = null }
 						</button>
 					</TwitterShareButton>
 					<TelegramShareButton
-						url={`https://demo.cdafund.org/projects/${campaignId}`}
+						url={`https://cambodiaalumni.org/projects/${campaignId}`}
 						title={detail?.title || ""}
 						style={{ width: "100%" }}
 						onClick={() => handleShareCampaign("TELEGRAM")}
@@ -243,12 +243,12 @@ const CausesDetailsRight = ({ creator = null, campaignId = null, detail = null }
 						</button>
 					</TelegramShareButton>
 					<CopyToClipboard
-						text={`https://demo.cdafund.org/projects/${campaignId}`}
+						text={`https://cambodiaalumni.org/projects/${campaignId}`}
 						onCopy={() => setCopied(true)}
 						onClick={() => handleShareCampaign("COPY_LINK")}
 					>
 						<button type="button" className="btn-copy-link">
-							<p>{isCopy ? "Link is copied" : `https://demo.cdafund.org/projects/${campaignId}`}</p>
+							<p>{isCopy ? "Link is copied" : `https://cambodiaalumni.org/projects/${campaignId}`}</p>
 							{isCopy ? <i className="fas fa-clipboard-check"></i> : <i className="fas fa-clipboard"></i>}
 						</button>
 					</CopyToClipboard>
