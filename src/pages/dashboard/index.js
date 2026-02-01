@@ -344,8 +344,6 @@ const Dashboard = () => {
 		}
 	}, [user]);
 
-	console.log(donorlist);
-
 	const columns = useMemo(
 		() => [
 			{
@@ -418,7 +416,7 @@ const Dashboard = () => {
 											<strong>
 												<i className="fas fa-user"></i>
 											</strong>{" "}
-											{user?.firstName} {user?.lastName}
+											{user?.firstName} {user?.lastName} <span style={{color: "#292d96"}}>{user?.isMember == 1 ? "(You are a member)" : ""}</span>
 										</p>
 										<p>
 											<strong>

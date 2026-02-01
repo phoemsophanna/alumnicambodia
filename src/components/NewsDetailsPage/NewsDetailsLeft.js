@@ -6,27 +6,13 @@ import { useTranslation } from "react-i18next";
 
 const NewsDetailsLeft = ({ data = null }) => {
 	const {t} = useTranslation();
+	console.log(social);
 	return (
 		<div className="news-details__left">
 			<div className="news-details__img">
 				<Image src={data?.image ? api.RESOURCE + data?.image : "/causes-one-img-1.jpg"} alt="" />
 			</div>
 			<div className="news-details__content">
-				{/* <ul className="list-unstyled news-details__meta">
-					<li>
-						<a href="#">
-							<i className="far fa-user-circle"></i> by {admin}
-						</a>
-					</li>
-					<li>
-						<span>/</span>
-					</li>
-					<li>
-						<a href="#">
-							<i className="far fa-comments"></i> {totalComments} Comments
-						</a>
-					</li>
-				</ul> */}
 				<h3 className="news-details__title">{data?.title}</h3>
 				<div className="news-details__text-one" dangerouslySetInnerHTML={{ __html: data?.content }}></div>
 			</div>
@@ -36,11 +22,33 @@ const NewsDetailsLeft = ({ data = null }) => {
 					<a href="#">{data?.type}</a>
 				</p>
 				<div className="news-details__social-list">
-					{social.map(({ icon, href }, index) => (
-						<a href={href} key={index}>
-							<i className={`fab ${icon}`}></i>
-						</a>
-					))}
+					<a
+						target="_blank"
+						rel="noopener noreferrer"
+						href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+							`https://cambodiaalumni.org/news/${data?.id}`
+						)}`}
+					>
+						<i className="fab fa-facebook-f"></i>
+					</a>
+					<a
+						target="_blank"
+						rel="noopener noreferrer"
+						href={`https://t.me/share/url?url=${encodeURIComponent(
+							`https://cambodiaalumni.org/news/${data?.id}`
+						)}&text=${encodeURIComponent(data?.title || "")}`}
+					>
+						<i className="fab fa-telegram"></i>
+					</a>
+					<a
+						target="_blank"
+						rel="noopener noreferrer"
+						href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+							`https://cambodiaalumni.org/news/${data?.id}`
+						)}`}
+					>
+						<i className="fab fa-linkedin-in"></i>
+					</a>
 				</div>
 			</div>
 			{/* <div className="author-one">

@@ -3,6 +3,7 @@ import NewsDetailsPage from "@/components/NewsDetailsPage/NewsDetailsPage";
 import PageHeader from "@/components/PageHeader/PageHeader";
 import { useRootContext } from "@/context/context";
 import axios from "axios";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -42,6 +43,23 @@ const NewsDetails = () => {
 
   return (
     <Layout pageTitle={t("general.NewsDetails")}>
+		<Head>
+
+		<meta property="og:title" content={record?.title || "News Details"} />
+		<meta
+		property="og:description"
+		content={record?.title || "News details"}
+		/>
+		<meta
+		property="og:image"
+		content={api.RESOURCE + record?.image || "https://yourdomain.com/default-og.jpg"}
+		/>
+		<meta
+		property="og:url"
+		content={`https://cambodiaalumni.org/news/${id}`}
+		/>
+		<meta property="og:type" content="article" />
+      </Head>
       <PageHeader pageTitle={t("general.NewsDetails")}  type="NEWS_PAGE" />
       <NewsDetailsPage data={record} />
     </Layout>
