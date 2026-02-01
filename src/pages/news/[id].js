@@ -73,7 +73,7 @@ const NewsDetails = ({ record, lang }) => {
 
 export async function getServerSideProps(context) {
   const { id } = context.query;
-  const { lang } = useRootContext();
+  const lang = context.locale || "en";
 
   let record = null;
 
