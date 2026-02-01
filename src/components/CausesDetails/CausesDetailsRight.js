@@ -214,7 +214,7 @@ const CausesDetailsRight = ({ creator = null, campaignId = null, detail = null }
 					<FacebookShareButton
 						url={`https://cambodiaalumni.org/projects/${campaignId}`}
 						quote={"Cambodia Alumni Share"}
-						hashtag={"#CambodiaAlumni"}
+						// hashtag={"#CambodiaAlumni"}
 						style={{ width: "100%" }}
 						onClick={() => handleShareCampaign("FACEBOOK")}
 					>
