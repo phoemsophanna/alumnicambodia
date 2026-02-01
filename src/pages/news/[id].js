@@ -44,22 +44,16 @@ const NewsDetails = () => {
   return (
     <Layout pageTitle={t("general.NewsDetails")}>
 		<Head>
-
-		<meta property="og:title" content={record?.title || "News Details"} />
-		<meta
-		property="og:description"
-		content={record?.title || "News details"}
-		/>
-		<meta
-		property="og:image"
-		content={api.RESOURCE + record?.image || "https://yourdomain.com/default-og.jpg"}
-		/>
-		<meta
-		property="og:url"
-		content={`https://cambodiaalumni.org/news/${id}`}
-		/>
-		<meta property="og:type" content="article" />
-      </Head>
+			<meta property="og:title" content={record?.title} />
+			<meta
+				property="og:description"
+				content={record?.title}
+			/>
+			<meta
+				property="og:image"
+				content={api.RESOURCE + record?.image}
+			/>
+      	</Head>
       <PageHeader pageTitle={t("general.NewsDetails")}  type="NEWS_PAGE" />
       <NewsDetailsPage data={record} />
     </Layout>
