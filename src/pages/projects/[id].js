@@ -77,8 +77,8 @@ const ProjectDetail = (props) => {
 					type: "project",
 					article: {
 						publishedTime: props?.project?.created_at,
-						section: "CDA Fund Project",
-						authors: ["CDA FUND"],
+						section: "Cambodia Alumni Project",
+						authors: ["Cambodia Alumni"],
 						tags: ["raised fund", "donation", "children", "cambodia"],
 					},
 					images: [
