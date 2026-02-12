@@ -404,10 +404,10 @@ const DonationModal = () => {
 											<Form.Check.Input type="radio" name="paymentMethod" onChange={donationSubmit.handleChange} value="KHQR" />
 											<Form.Check.Label>
 												<div className="check-payment-option">
-													<Image src={LogoKhqr.src} style={{borderRadius: "10px"}} alt="" />
+													<Image src={"/abaLogo.svg"} style={{marginRight: "10px", height: 50}} alt="" />
 													<div className="check-payment-option-content">
 														<h4>KHQR</h4>
-														<p>Scan to pay with member bank app</p>
+														<p>Scan to pay with any banking app</p>
 													</div>
 												</div>
 											</Form.Check.Label>
@@ -416,10 +416,12 @@ const DonationModal = () => {
 											<Form.Check.Input type="radio" name="paymentMethod" onChange={donationSubmit.handleChange} value="CREDIT_DEBIT_CARD" />
 											<Form.Check.Label>
 												<div className="check-payment-option">
-													<Image src={LogoCredit.src} style={{borderRadius: "10px"}} alt="" />
+													<div className="content-image" style={{display: "flex", alignItems: "center", justifyContent: "center", width: 50, height: 50, borderRadius: 6, backgroundColor: "#005E7B"}}>
+														<Image src={`/visaCard.svg`} alt="" width={35} />
+													</div>
 													<div className="check-payment-option-content">
 														<h4>Credit/Debit Card</h4>
-														<Image src="https://res.cloudinary.com/dufghzvge/image/upload/v1704630599/4Cards_1x_bhrnwd.png" alt="" />
+														<Image src="/visaCardList.svg" alt="" />
 													</div>
 												</div>
 											</Form.Check.Label>

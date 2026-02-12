@@ -3,7 +3,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { Col, Container, Image, Row } from "react-bootstrap";
 import brandLogo from "../../assets/images/LOGO-CAA New.png";
-import accept from "../../assets/images/accept-payment.svg";
+import accept from "../../../public/footer.svg";
 import { useRootContext } from "@/context/context";
 import { useTranslation } from "react-i18next";
 import { api } from "src/config";

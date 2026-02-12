@@ -8143,10 +8143,12 @@ input[type="color"]:focus,
 	align-items: center;
 	width: 100%;
 }
-.check-payment-option img {
-	height: 50px;
+
+.check-payment-option .content-image {
 	margin-right: 10px;
 }
+
+
 
 .check-payment-option-content h4 {
 	font-size: 17px;
