@@ -401,7 +401,7 @@ const DonationModal = () => {
 									<Form.Label style={{ color: "#333", fontWeight: "800" }}>Payment Options</Form.Label>
 									<div className="payment-options">
 										<Form.Check type="radio" id={`check-api-radio-3`}>
-											<Form.Check.Input type="radio" name="paymentMethod" onChange={donationSubmit.handleChange} value="KHQR" />
+											<Form.Check.Input type="radio" name="paymentMethod" onChange={donationSubmit.handleChange} value="ABAKHQR" />
 											<Form.Check.Label>
 												<div className="check-payment-option">
 													<Image src={"/abaLogo.svg"} style={{marginRight: "10px", height: 50}} alt="" />
@@ -413,7 +413,7 @@ const DonationModal = () => {
 											</Form.Check.Label>
 										</Form.Check>
 										<Form.Check type="radio" id={`check-api-radio-1`}>
-											<Form.Check.Input type="radio" name="paymentMethod" onChange={donationSubmit.handleChange} value="CREDIT_DEBIT_CARD" />
+											<Form.Check.Input type="radio" name="paymentMethod" onChange={donationSubmit.handleChange} value="CARD" />
 											<Form.Check.Label>
 												<div className="check-payment-option">
 													<div className="content-image" style={{display: "flex", alignItems: "center", justifyContent: "center", width: 50, height: 50, borderRadius: 6, backgroundColor: "#005E7B"}}>
