@@ -20,7 +20,7 @@ const NavItem = ({ item = {} }) => {
   return (
     <li className={`dropdown${pathname === href ? " current" : ""}`}>
       <Link href={href}>
-        <a className={expand ? " expanded" : ""}>
+        <span className={expand ? " expanded" : ""}>
           {name}
           {
             subNavItems.length > 0 ? (
@@ -33,7 +33,7 @@ const NavItem = ({ item = {} }) => {
               </button>
             ) : ""
           }
-        </a>
+        </span>
       </Link>
       <ul
         style={{

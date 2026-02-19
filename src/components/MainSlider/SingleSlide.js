@@ -18,9 +18,9 @@ const SingleSlide = ({ slide = {} }) => {
 							<p>{slide?.subtitle || slide?.subTitle}</p>
 							<h2 dangerouslySetInnerHTML={{__html: slide?.title}}></h2>
 							{slide.linkTo ? <Link href={slide?.linkTo}>
-								<a className="thm-btn">
+								<span className="thm-btn">
 									<i className="fa fa-heart"></i>{ slide?.linkLabel || "DONATE NOW"}
-								</a>
+								</span>
 							</Link> : null}
 							
 							{/* <div className="main-slider__shape-1 zoom-fade">

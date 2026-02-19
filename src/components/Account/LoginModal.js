@@ -538,7 +538,7 @@ const LoginModal = () => {
 				if (data.status == "success") {
 					setShowForgetPassOTP(false);
 					setModalTitle("FORGET_PASSWORD");
-					forgotSubmit.values?.username = verifyAccountForm.values?.userLogin;
+					forgotSubmit.values.username = verifyAccountForm.values?.userLogin;
 				} else {
 					setMessage(data.message);
 				}
@@ -556,7 +556,7 @@ const LoginModal = () => {
 				if (data.status == "success") {
 					setShowForgetPassOTP(false);
 					setModalTitle("FORGET_PASSWORD");
-					forgotSubmit.values?.username = verifyAccountForm.values?.userLogin;
+					forgotSubmit.values.username = verifyAccountForm.values?.userLogin;
 				} else {
 					setMessage(data.message);
 				}

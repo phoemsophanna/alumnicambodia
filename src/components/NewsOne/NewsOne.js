@@ -54,9 +54,9 @@ const NewsOne = ({ data = null }) => {
 					<Col xl={4} lg={4}>
 						<div className="news-one__button-box">
 							<Link href="/news">
-								<a href="#" className="news-one__btn thm-btn">
+								<span href="#" className="news-one__btn thm-btn">
 									<i className="fas fa-arrow-circle-right"></i>{t("general.ViewMore")}
-								</a>
+								</span>
 							</Link>
 						</div>
 					</Col>
@@ -74,15 +74,13 @@ const NewsOne = ({ data = null }) => {
 									alt=""
 								/>
 								<Link href={news?.type === "NEWS" ? `/news/${news?.id}` : `/events/${news?.id}`}>
-									<a>
-										<i className="fa fa-plus"></i>
-									</a>
+									<i className="fa fa-plus"></i>
 								</Link>
 							</div>
 							<div className="news-one__bottom">
 								<h3 className="news-one__title">
 									<Link href={news?.type === "NEWS" ? `/news/${news?.id}` : `/events/${news?.id}`}>
-										<a>{news?.title}</a>
+										{news?.title}
 									</Link>
 								</h3>
 								<p style={{color: "#fff"}}>

@@ -14,19 +14,19 @@ const NavItem = ({ navItem = {} }) => {
   return (
     <li className={`dropdown${current ? " current" : ""}`}>
       <Link href={href}>
-        <a href={href}>{t(`header.${name}`)}</a>
+        <span>{t(`header.${name}`)}</span>
       </Link>
       <ul>
         {subNavItems.map((subItem) => (
           <li key={subItem.id}>
             <Link href={subItem.href}>
-              <a href={href}>{t(`header.${subItem.name}`)}</a>
+              <span>{t(`header.${subItem.name}`)}</span>
             </Link>
             <ul>
               {subItem.subItems?.map((item) => (
                 <li key={item.id}>
                   <Link href={item.href}>
-                    <a href={href}>{t(`header.${item.name}`)}</a>
+                    <span>{t(`header.${item.name}`)}</span>
                   </Link>
                 </li>
               ))}

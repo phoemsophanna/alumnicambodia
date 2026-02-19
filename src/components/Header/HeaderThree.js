@@ -23,17 +23,15 @@ const HeaderThree = () => {
 					<div className="main-menu-three__container clearfix">
 						<div className="main-menu-three__logo">
 							<Link href="/">
-								<a>
-									<Image src="https://res.cloudinary.com/dufghzvge/image/upload/v1704357971/logo-3.cc7cfb92_zb2htn.png" alt="" />
-								</a>
+								<Image src="https://res.cloudinary.com/dufghzvge/image/upload/v1704357971/logo-3.cc7cfb92_zb2htn.png" alt="" />
 							</Link>
 						</div>
 						<div className="main-menu-three__inner-upper clearfix">
 							<div className="main-menu-three__btn">
 								<Link href="/causes-details">
-									<a className="main-menu-three__donate-btn">
+									<span className="main-menu-three__donate-btn">
 										<i className="fa fa-heart"></i>DONATE
-									</a>
+									</span>
 								</Link>
 							</div>
 							<div className={scrollTop ? "sticky-header__content main-menu-three__inner clearfix" : "main-menu-three__inner clearfix"}>

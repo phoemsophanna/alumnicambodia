@@ -3,10 +3,12 @@ import { Col, Container, Image, Row } from "react-bootstrap";
 import axios from "axios";
 import { api } from "src/config";
 import { useTranslation } from "react-i18next";
+import { useRootContext } from "@/context/context";
 
 const DonorsPage = () => {
 	const {t} = useTranslation();
 	const [record, setRecord] = useState([]);
+	const { formatUSD } = useRootContext();
 	const fetchDonorList = async () => {
 		await axios
 			.get(`${api.BASE_URL}/web/donation/donor-list`)
@@ -38,7 +40,7 @@ const DonorsPage = () => {
 									</div>
 									<div className="donation-detail-container">
 										<div className="donation-detail-item">
-											<strong>${donor.totalDonation}</strong>
+											<strong>${formatUSD(donor.totalDonation)}</strong>
 											<small>{t("general.Donations")}</small>
 										</div>
 										<div className="donation-detail-item">

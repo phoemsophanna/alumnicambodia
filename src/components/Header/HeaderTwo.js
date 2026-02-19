@@ -17,9 +17,7 @@ const HeaderTwo = () => {
 					<div className="main-header-two__top clearfix">
 						<div className="main-header-two__logo">
 							<Link href="/">
-								<a>
-									<Image src="https://res.cloudinary.com/dufghzvge/image/upload/v1704357972/logo-2.4765251b_rap1wh.png" alt="" />
-								</a>
+								<Image src="https://res.cloudinary.com/dufghzvge/image/upload/v1704357972/logo-2.4765251b_rap1wh.png" alt="" />
 							</Link>
 						</div>
 						<div className="main-header-two__contact-info">
@@ -54,9 +52,9 @@ const HeaderTwo = () => {
 							</ul>
 							<div className="main-header-two__btn">
 								<Link href="/causes-details">
-									<a className="main-header-two__donate-btn">
+									<span className="main-header-two__donate-btn">
 										<i className="fa fa-heart"></i>DONATE{" "}
-									</a>
+									</span>
 								</Link>
 							</div>
 						</div>

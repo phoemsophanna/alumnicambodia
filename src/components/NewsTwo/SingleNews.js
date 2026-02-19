@@ -12,9 +12,7 @@ const SingleNews = ({ news = null }) => {
 					<div className="news-two__img">
 						<Image src={news?.image ? api.RESOURCE + news?.image : "/"} alt="" />
 						<Link href={news?.type === "NEWS" ? `/news/${news?.id}` : `/events/${news?.id}`}>
-							<a>
-								<i className="fa fa-plus"></i>
-							</a>
+							<i className="fa fa-plus"></i>
 						</Link>
 					</div>
 					<div className="news-two__date">

@@ -19,9 +19,9 @@ const MobileMenu = () => {
 
 				<div className="logo-box">
 					<Link href="/">
-						<a aria-label="logo image">
+						<span aria-label="logo image">
 							<Image src={brandLogo.src} alt="CDA Logo - Children Cambodia Association Logo" width="114" />
-						</a>
+						</span>
 					</Link>
 				</div>
 				<div className="mobile-nav__container">

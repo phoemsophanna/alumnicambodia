@@ -54,7 +54,7 @@ const Dashboard = () => {
 	const [campaignList, setCampaignList] = useState([]);
 	const [countStart, setCountStart] = useState(false);
 	const [activeTabClasses, setActive] = useState(1);
-	const { updateUserCache } = useRootContext();
+	const { updateUserCache, formatUSD } = useRootContext();
 	const {t} = useTranslation();
 	const [user, setUser] = useState(null);
 	const [information, setInformation] = useState(null);
@@ -94,7 +94,6 @@ const Dashboard = () => {
 				},
 			})
 			.then((response) => {
-				console.log(response);
 				setCampaignList(response.data.data);
 				setCampaignRecord({
 					totalCampaign: response.data?.record?.totalCampaign,
@@ -117,49 +116,10 @@ const Dashboard = () => {
 			});
 	};
 
-	const deleteCampaign = (id) => {
-		Swal.fire({
-			title: "Are you sure?",
-			text: "Are you sure you want to delete this campaign? This action cannot be reverse.",
-			showCancelButton: true,
-			confirmButtonColor: "#04735b",
-			confirmButtonText: "Delete",
-		}).then(async (result) => {
-			if (result.isConfirmed) {
-				setLoadingList(true);
-				await axios
-					.request({
-						method: "delete",
-						maxBodyLength: Infinity,
-						url: `${api.BASE_URL}/campaign-web/delete/${id}`,
-						headers: {
-							"Content-Type": "application/json",
-							Authorization: `Bearer ${token}`,
-						},
-					})
-					.then((response) => {
-						console.log(response);
-						Swal.fire({
-							title: "Deleted!",
-							text: "Your campaign has been deleted.",
-							icon: "success",
-						});
-					})
-					.catch((error) => {
-						console.log(error);
-					})
-					.finally(() => {
-						setLoadingList(false);
-						fetchCampaignList();
-					});
-			}
-		});
-	};
-
 	const [toggleEditProfile, setToggleEditProfile] = useState(false);
 	const [loadingSave, setLoadingSave] = useState(false);
 
-	useEffect(async () => {
+	useEffect(() => {
 		if (token) {
 			let config = {
 				method: "get",
@@ -171,7 +131,7 @@ const Dashboard = () => {
 				},
 			};
 
-			await axios
+			axios
 				.request(config)
 				.then((response) => {
 					response.data.image = response.data.image
@@ -194,7 +154,7 @@ const Dashboard = () => {
 				},
 			};
 
-			await axios
+			axios
 				.request(configInformation)
 				.then((response) => {
 					console.log(response.data);
@@ -213,12 +173,6 @@ const Dashboard = () => {
 			setCampaignList([]);
 		};
 	}, [token,toggleEditProfile]);
-
-	const onVisibilityChange = (isVisible) => {
-		if (isVisible) {
-			setCountStart(true);
-		}
-	};
 
 	const campaignForm = useFormik({
 		initialValues: {
@@ -328,9 +282,9 @@ const Dashboard = () => {
 		updateUserCache(null);
 	};
 
-	useEffect(async () =>  {
+	useEffect(() => {
 		if(user){
-			await axios.request({
+			axios.request({
 				method: "get",
 				maxBodyLength: Infinity,
 				url: `${api.BASE_URL}/user-donation/donorlist/${user.id}`,
@@ -375,7 +329,7 @@ const Dashboard = () => {
 			},
 			{
 				name: "Donation ($)",
-				selector: (row) => <span>${row.amount.toFixed(2)}</span>,
+				selector: (row) => <span>${formatUSD(row.amount)}</span>,
 				sortable: true,
 				minWidth: "200px",
 				grow: 0,
@@ -451,7 +405,7 @@ const Dashboard = () => {
 									<span className="icon-coin"></span>
 									<div className="total">
 										<p className="total-title">Total Donations</p>
-										<p className="total-balance">${parseFloat(user?.totalDonation)?.toFixed(2) || 0.0}</p>
+										<p className="total-balance">${formatUSD(user?.totalDonation) || 0.0}</p>
 									</div>
 								</div>
 							</>
@@ -938,7 +892,7 @@ const Dashboard = () => {
 						<span className="icon-coin"></span>
 						<div className="total">
 							<p className="total-title">Total Donations</p>
-							<p className="total-balance">${parseFloat(user?.totalDonation)?.toFixed(2) || 0.0}</p>
+							<p className="total-balance">${formatUSD(user?.totalDonation) || 0.0}</p>
 						</div>
 					</div>
 
@@ -974,634 +928,14 @@ const Dashboard = () => {
 								</p>
 								<div className="text-center">
 									<Link href="/form-information">
-										<a className="main-menu__donate-btn" style={{ display: "inline-block", border: "none" }}>
+										<span className="main-menu__donate-btn" style={{ display: "inline-block", border: "none" }}>
 											Join a Member Now
-										</a>
+										</span>
 									</Link>
 								</div>
 							</div>
 						) : ""
 					}
-					
-
-					{/* <div className="dashboard-body">
-						<div className="dashboard-body-header">
-							<div className="dashboard-data-record">
-								<div className="record-item">
-									<span className="icon-donation"></span>
-									<div className="record-item-info">
-										<p>Campaigns</p>
-										<p className="record-count">{campaignRecord?.totalCampaign}</p>
-									</div>
-								</div>
-								<div className="record-item">
-									<span className="icon-fundraiser"></span>
-									<div className="record-item-info">
-										<p>Funds Raised</p>
-										<p className="record-count">${campaignRecord?.totalRaised?.toFixed(2)}</p>
-									</div>
-								</div>
-								<div className="record-item">
-									<span className="icon-donation-1"></span>
-									<div className="record-item-info">
-										<p>Donors</p>
-										<p className="record-count">{campaignRecord?.totalDonation}</p>
-									</div>
-								</div>
-							</div>
-							<Link href="/dashboard/withdraw">
-								<a className="main-menu__donate-btn" style={{ border: "none" }}>
-									<i className="fas fa-plus"></i> Request Withdraw
-								</a>
-							</Link>
-							<Link href="/form-campaign">
-								<a className="main-menu__donate-btn" style={{ border: "none" }}>
-									<i className="fas fa-plus"></i> New Campaign
-								</a>
-							</Link>
-						</div>
-
-						<Tab.Container
-							defaultActiveKey={1}
-							mountOnEnter={true}
-							onSelect={(e) => {
-								setActive({ [e]: activeTabClasses });
-								fetchCampaignList(e);
-							}}
-						>
-							<Nav variant="tabs" style={{ overflowX: "auto", overflowY: "hidden" }} className=" d-flex flex-nowrap flex-row mt-2 menu-tab" justify>
-								<Nav.Item className="d-flex  flex-column">
-									<Nav.Link eventKey={1}>Recently Added ({campaignRecord.total})</Nav.Link>
-								</Nav.Item>
-								<Nav.Item className="d-flex  flex-column">
-									<Nav.Link eventKey={2}>Pending Campaign ({campaignRecord.pending})</Nav.Link>
-								</Nav.Item>
-								<Nav.Item className="d-flex  flex-column">
-									<Nav.Link eventKey={3}>Draft ({campaignRecord.draft})</Nav.Link>
-								</Nav.Item>
-								<Nav.Item className="d-flex  flex-column">
-									<Nav.Link eventKey={4}>Complete ({campaignRecord.complete})</Nav.Link>
-								</Nav.Item>
-								<Nav.Item className="d-flex  flex-column">
-									<Nav.Link eventKey={5}>Inactive ({campaignRecord.inactive})</Nav.Link>
-								</Nav.Item>
-								<Nav.Item className="d-flex  flex-column">
-									<Nav.Link eventKey={6}>Rejected ({campaignRecord.reject})</Nav.Link>
-								</Nav.Item>
-								<Nav.Item className="d-flex  flex-column">
-									<Nav.Link eventKey={7}>Failed ({campaignRecord.fail})</Nav.Link>
-								</Nav.Item>
-							</Nav>
-							<Tab.Content className="d-flex flex-column flex-grow-1">
-								<Tab.Pane eventKey={1}>
-									<Row>
-										{campaignList.map((el, index) => (
-											<Col xl={4} lg={6} md={6} key={index}>
-												<div className={"my-4"}>
-													<div style={{ userSelect: "none" }} className="causes-one__single animated fadeInLeft">
-														<div className="causes-one__img">
-															<div className="causes-one__img-box">
-																<Link href={`/projects/${el.id}`}>
-																	<Image
-																		src={el.campaignGallery?.length > 0 ? `${api.RESOURCE}${el.campaignGallery[0]}` : "/causes-one-img-1.jpg"}
-																		alt=""
-																		style={{ cursor: "pointer" }}
-																	/>
-																</Link>
-															</div>
-															<div className="causes-one__category" style={{ backgroundColor: "#6c757d" }}>
-																<span>
-																	<span className="icon-access_alarms"></span> {el.status}
-																</span>
-															</div>
-														</div>
-														<div className="causes-one__content">
-															<h3 className="causes-one__title">{el.campaignTile}</h3>
-															<span className="causes-one__date">
-																Created: <strong>{el.createdAt}</strong>
-															</span>
-														</div>
-														<div className="causes__progress-contain">
-															<div className="causes-one__progress">
-																<ReactVisibilitySensor offset={{ top: 10 }} delayedCall={true} onChange={onVisibilityChange}>
-																	<div className="bar">
-																		<div
-																			className="bar-inner count-bar"
-																			data-percent={`${countStart ? Math.round((+el.totalRaised / +el.goal) * 100) : 0}%`}
-																			style={{
-																				width: `${countStart ? Math.round((+el.totalRaised / +el.goal) * 100) : 0}%`,
-																				opacity: 1,
-																			}}
-																		>
-																			<div className="count-text" style={{ opacity: 1 }}>
-																				{countStart && el.goal > 0 ? Math.round((+el.totalRaised / +el.goal) * 100) : 0}%
-																			</div>
-																		</div>
-																	</div>
-																</ReactVisibilitySensor>
-																<div className="causes-one__goals">
-																	<p>
-																		<span>${el.totalRaised.toFixed(2)}</span> Raised
-																	</p>
-																	<p>
-																		<span>${el.goal.toFixed(2)}</span> Goal
-																	</p>
-																</div>
-															</div>
-														</div>
-														{el.status == "DRAFT" || el.status == "PENDING" ? (
-															<div className="causes-single-btn__contain">
-																<button className="thm-btn delete thm-btn-sm" onClick={() => deleteCampaign(el.id)}>
-																	<i className="fas fa-trash"></i> Delete
-																</button>
-																<button className="thm-btn edit thm-btn-sm" onClick={() => router.replace(`/form-campaign/${el.id}`)}>
-																	<i className="far fa-edit"></i> Edit Detail
-																</button>
-															</div>
-														) : el.allowEdit == 1 ? (
-															<div className="causes-single-btn__contain">
-																<button className="thm-btn edit thm-btn-sm" onClick={() => router.replace(`/form-campaign/${el.id}`)}>
-																	<i className="far fa-edit"></i> Edit Detail
-																</button>
-															</div>
-														) : null}
-													</div>
-												</div>
-											</Col>
-										))}
-									</Row>
-								</Tab.Pane>
-								<Tab.Pane eventKey={2}>
-									<Row>
-										{campaignList.map((el, index) => (
-											<Col xl={4} lg={6} md={6} key={index}>
-												<div className={"my-4"}>
-													<div style={{ userSelect: "none" }} className="causes-one__single animated fadeInLeft">
-														<div className="causes-one__img">
-															<div className="causes-one__img-box">
-																<Link href={`/projects/${el.id}`}>
-																	<Image
-																		src={el.campaignGallery?.length > 0 ? `${api.RESOURCE}${el.campaignGallery[0]}` : "/causes-one-img-1.jpg"}
-																		alt=""
-																		style={{ cursor: "pointer" }}
-																	/>
-																</Link>
-															</div>
-															<div className="causes-one__category" style={{ backgroundColor: "#6c757d" }}>
-																<span>
-																	<span className="icon-access_alarms"></span> {el.status}
-																</span>
-															</div>
-														</div>
-														<div className="causes-one__content">
-															<h3 className="causes-one__title">{el.campaignTile}</h3>
-															<span className="causes-one__date">
-																Created: <strong>{el.createdAt}</strong>
-															</span>
-														</div>
-														<div className="causes__progress-contain">
-															<div className="causes-one__progress">
-																<ReactVisibilitySensor offset={{ top: 10 }} delayedCall={true} onChange={onVisibilityChange}>
-																	<div className="bar">
-																		<div
-																			className="bar-inner count-bar"
-																			data-percent={`${countStart ? Math.round((+el.raised / +el.goal) * 100) : 0}%`}
-																			style={{
-																				width: `${countStart ? Math.round((+el.raised / +el.goal) * 100) : 0}%`,
-																				opacity: 1,
-																			}}
-																		>
-																			<div className="count-text" style={{ opacity: 1 }}>
-																				{countStart && el.goal > 0 ? Math.round((+el.raised / +el.goal) * 100) : 0}%
-																			</div>
-																		</div>
-																	</div>
-																</ReactVisibilitySensor>
-																<div className="causes-one__goals">
-																	<p>
-																		<span>${el.raised.toFixed(2)}</span> Raised
-																	</p>
-																	<p>
-																		<span>${el.goal.toFixed(2)}</span> Goal
-																	</p>
-																</div>
-															</div>
-														</div>
-														{el.status == "DRAFT" || el.status == "PENDING" ? (
-															<div className="causes-single-btn__contain">
-																<button className="thm-btn delete thm-btn-sm" onClick={() => deleteCampaign(el.id)}>
-																	<i className="fas fa-trash"></i> Delete
-																</button>
-																<button className="thm-btn edit thm-btn-sm" onClick={() => router.replace(`/form-campaign/${el.id}`)}>
-																	<i className="far fa-edit"></i> Edit Detail
-																</button>
-															</div>
-														) : el.allowEdit == 1 ? (
-															<div className="causes-single-btn__contain">
-																<button className="thm-btn edit thm-btn-sm" onClick={() => router.replace(`/form-campaign/${el.id}`)}>
-																	<i className="far fa-edit"></i> Edit Detail
-																</button>
-															</div>
-														) : null}
-													</div>
-												</div>
-											</Col>
-										))}
-									</Row>
-								</Tab.Pane>
-								<Tab.Pane eventKey={3}>
-									<Row>
-										{campaignList.map((el, index) => (
-											<Col xl={4} lg={6} md={6} key={index}>
-												<div className={"my-4"}>
-													<div style={{ userSelect: "none" }} className="causes-one__single animated fadeInLeft">
-														<div className="causes-one__img">
-															<div className="causes-one__img-box">
-																<Link href={`/projects/${el.id}`}>
-																	<Image
-																		src={el.campaignGallery?.length > 0 ? `${api.RESOURCE}${el.campaignGallery[0]}` : "/causes-one-img-1.jpg"}
-																		alt=""
-																		style={{ cursor: "pointer" }}
-																	/>
-																</Link>
-															</div>
-															<div className="causes-one__category" style={{ backgroundColor: "#6c757d" }}>
-																<span>
-																	<span className="icon-access_alarms"></span> {el.status}
-																</span>
-															</div>
-														</div>
-														<div className="causes-one__content">
-															<h3 className="causes-one__title">{el.campaignTile}</h3>
-															<span className="causes-one__date">
-																Created: <strong>{el.createdAt}</strong>
-															</span>
-														</div>
-														<div className="causes__progress-contain">
-															<div className="causes-one__progress">
-																<ReactVisibilitySensor offset={{ top: 10 }} delayedCall={true} onChange={onVisibilityChange}>
-																	<div className="bar">
-																		<div
-																			className="bar-inner count-bar"
-																			data-percent={`${countStart ? Math.round((+el.raised / +el.goal) * 100) : 0}%`}
-																			style={{
-																				width: `${countStart ? Math.round((+el.raised / +el.goal) * 100) : 0}%`,
-																				opacity: 1,
-																			}}
-																		>
-																			<div className="count-text" style={{ opacity: 1 }}>
-																				{countStart && el.goal > 0 ? Math.round((+el.raised / +el.goal) * 100) : 0}%
-																			</div>
-																		</div>
-																	</div>
-																</ReactVisibilitySensor>
-																<div className="causes-one__goals">
-																	<p>
-																		<span>${el.raised.toFixed(2)}</span> Raised
-																	</p>
-																	<p>
-																		<span>${el.goal.toFixed(2)}</span> Goal
-																	</p>
-																</div>
-															</div>
-														</div>
-														{el.status == "DRAFT" || el.status == "PENDING" ? (
-															<div className="causes-single-btn__contain">
-																<button className="thm-btn delete thm-btn-sm" onClick={() => deleteCampaign(el.id)}>
-																	<i className="fas fa-trash"></i> Delete
-																</button>
-																<button className="thm-btn edit thm-btn-sm" onClick={() => router.replace(`/form-campaign/${el.id}`)}>
-																	<i className="far fa-edit"></i> Edit Detail
-																</button>
-															</div>
-														) : el.allowEdit == 1 ? (
-															<div className="causes-single-btn__contain">
-																<button className="thm-btn edit thm-btn-sm" onClick={() => router.replace(`/form-campaign/${el.id}`)}>
-																	<i className="far fa-edit"></i> Edit Detail
-																</button>
-															</div>
-														) : null}
-													</div>
-												</div>
-											</Col>
-										))}
-									</Row>
-								</Tab.Pane>
-								<Tab.Pane eventKey={4}>
-									<Row>
-										{campaignList.map((el, index) => (
-											<Col xl={4} lg={6} md={6} key={index}>
-												<div className={"my-4"}>
-													<div style={{ userSelect: "none" }} className="causes-one__single animated fadeInLeft">
-														<div className="causes-one__img">
-															<div className="causes-one__img-box">
-																<Link href={`/projects/${el.id}`}>
-																	<Image
-																		src={el.campaignGallery?.length > 0 ? `${api.RESOURCE}${el.campaignGallery[0]}` : "/causes-one-img-1.jpg"}
-																		alt=""
-																		style={{ cursor: "pointer" }}
-																	/>
-																</Link>
-															</div>
-															<div className="causes-one__category" style={{ backgroundColor: "#6c757d" }}>
-																<span>
-																	<span className="icon-access_alarms"></span> {el.status}
-																</span>
-															</div>
-														</div>
-														<div className="causes-one__content">
-															<h3 className="causes-one__title">{el.campaignTile}</h3>
-															<span className="causes-one__date">
-																Created: <strong>{el.createdAt}</strong>
-															</span>
-														</div>
-														<div className="causes__progress-contain">
-															<div className="causes-one__progress">
-																<ReactVisibilitySensor offset={{ top: 10 }} delayedCall={true} onChange={onVisibilityChange}>
-																	<div className="bar">
-																		<div
-																			className="bar-inner count-bar"
-																			data-percent={`${countStart ? Math.round((+el.raised / +el.goal) * 100) : 0}%`}
-																			style={{
-																				width: `${countStart ? Math.round((+el.raised / +el.goal) * 100) : 0}%`,
-																				opacity: 1,
-																			}}
-																		>
-																			<div className="count-text" style={{ opacity: 1 }}>
-																				{countStart && el.goal > 0 ? Math.round((+el.raised / +el.goal) * 100) : 0}%
-																			</div>
-																		</div>
-																	</div>
-																</ReactVisibilitySensor>
-																<div className="causes-one__goals">
-																	<p>
-																		<span>${el.raised.toFixed(2)}</span> Raised
-																	</p>
-																	<p>
-																		<span>${el.goal.toFixed(2)}</span> Goal
-																	</p>
-																</div>
-															</div>
-														</div>
-														{el.status == "DRAFT" || el.status == "PENDING" ? (
-															<div className="causes-single-btn__contain">
-																<button className="thm-btn delete thm-btn-sm" onClick={() => deleteCampaign(el.id)}>
-																	<i className="fas fa-trash"></i> Delete
-																</button>
-																<button className="thm-btn edit thm-btn-sm" onClick={() => router.replace(`/form-campaign/${el.id}`)}>
-																	<i className="far fa-edit"></i> Edit Detail
-																</button>
-															</div>
-														) : el.allowEdit == 1 ? (
-															<div className="causes-single-btn__contain">
-																<button className="thm-btn edit thm-btn-sm" onClick={() => router.replace(`/form-campaign/${el.id}`)}>
-																	<i className="far fa-edit"></i> Edit Detail
-																</button>
-															</div>
-														) : null}
-													</div>
-												</div>
-											</Col>
-										))}
-									</Row>
-								</Tab.Pane>
-								<Tab.Pane eventKey={5}>
-									<Row>
-										{campaignList.map((el, index) => (
-											<Col xl={4} lg={6} md={6} key={index}>
-												<div className={"my-4"}>
-													<div style={{ userSelect: "none" }} className="causes-one__single animated fadeInLeft">
-														<div className="causes-one__img">
-															<div className="causes-one__img-box">
-																<Link href={`/projects/${el.id}`}>
-																	<Image
-																		src={el.campaignGallery?.length > 0 ? `${api.RESOURCE}${el.campaignGallery[0]}` : "/causes-one-img-1.jpg"}
-																		alt=""
-																		style={{ cursor: "pointer" }}
-																	/>
-																</Link>
-															</div>
-															<div className="causes-one__category" style={{ backgroundColor: "#6c757d" }}>
-																<span>
-																	<span className="icon-access_alarms"></span> {el.status}
-																</span>
-															</div>
-														</div>
-														<div className="causes-one__content">
-															<h3 className="causes-one__title">{el.campaignTile}</h3>
-															<span className="causes-one__date">
-																Created: <strong>{el.createdAt}</strong>
-															</span>
-														</div>
-														<div className="causes__progress-contain">
-															<div className="causes-one__progress">
-																<ReactVisibilitySensor offset={{ top: 10 }} delayedCall={true} onChange={onVisibilityChange}>
-																	<div className="bar">
-																		<div
-																			className="bar-inner count-bar"
-																			data-percent={`${countStart ? Math.round((+el.raised / +el.goal) * 100) : 0}%`}
-																			style={{
-																				width: `${countStart ? Math.round((+el.raised / +el.goal) * 100) : 0}%`,
-																				opacity: 1,
-																			}}
-																		>
-																			<div className="count-text" style={{ opacity: 1 }}>
-																				{countStart && el.goal > 0 ? Math.round((+el.raised / +el.goal) * 100) : 0}%
-																			</div>
-																		</div>
-																	</div>
-																</ReactVisibilitySensor>
-																<div className="causes-one__goals">
-																	<p>
-																		<span>${el.raised.toFixed(2)}</span> Raised
-																	</p>
-																	<p>
-																		<span>${el.goal.toFixed(2)}</span> Goal
-																	</p>
-																</div>
-															</div>
-														</div>
-														{el.status == "DRAFT" || el.status == "PENDING" ? (
-															<div className="causes-single-btn__contain">
-																<button className="thm-btn delete thm-btn-sm" onClick={() => deleteCampaign(el.id)}>
-																	<i className="fas fa-trash"></i> Delete
-																</button>
-																<button className="thm-btn edit thm-btn-sm" onClick={() => router.replace(`/form-campaign/${el.id}`)}>
-																	<i className="far fa-edit"></i> Edit Detail
-																</button>
-															</div>
-														) : el.allowEdit == 1 ? (
-															<div className="causes-single-btn__contain">
-																<button className="thm-btn edit thm-btn-sm" onClick={() => router.replace(`/form-campaign/${el.id}`)}>
-																	<i className="far fa-edit"></i> Edit Detail
-																</button>
-															</div>
-														) : null}
-													</div>
-												</div>
-											</Col>
-										))}
-									</Row>
-								</Tab.Pane>
-								<Tab.Pane eventKey={6}>
-									<Row>
-										{campaignList.map((el, index) => (
-											<Col xl={4} lg={6} md={6} key={index}>
-												<div className={"my-4"}>
-													<div style={{ userSelect: "none" }} className="causes-one__single animated fadeInLeft">
-														<div className="causes-one__img">
-															<div className="causes-one__img-box">
-																<Link href={`/projects/${el.id}`}>
-																	<Image
-																		src={el.campaignGallery?.length > 0 ? `${api.RESOURCE}${el.campaignGallery[0]}` : "/causes-one-img-1.jpg"}
-																		alt=""
-																		style={{ cursor: "pointer" }}
-																	/>
-																</Link>
-															</div>
-															<div className="causes-one__category" style={{ backgroundColor: "#6c757d" }}>
-																<span>
-																	<span className="icon-access_alarms"></span> {el.status}
-																</span>
-															</div>
-														</div>
-														<div className="causes-one__content">
-															<h3 className="causes-one__title">{el.campaignTile}</h3>
-															<span className="causes-one__date">
-																Created: <strong>{el.createdAt}</strong>
-															</span>
-														</div>
-														<div className="causes__progress-contain">
-															<div className="causes-one__progress">
-																<ReactVisibilitySensor offset={{ top: 10 }} delayedCall={true} onChange={onVisibilityChange}>
-																	<div className="bar">
-																		<div
-																			className="bar-inner count-bar"
-																			data-percent={`${countStart ? Math.round((+el.raised / +el.goal) * 100) : 0}%`}
-																			style={{
-																				width: `${countStart ? Math.round((+el.raised / +el.goal) * 100) : 0}%`,
-																				opacity: 1,
-																			}}
-																		>
-																			<div className="count-text" style={{ opacity: 1 }}>
-																				{countStart && el.goal > 0 ? Math.round((+el.raised / +el.goal) * 100) : 0}%
-																			</div>
-																		</div>
-																	</div>
-																</ReactVisibilitySensor>
-																<div className="causes-one__goals">
-																	<p>
-																		<span>${el.raised.toFixed(2)}</span> Raised
-																	</p>
-																	<p>
-																		<span>${el.goal.toFixed(2)}</span> Goal
-																	</p>
-																</div>
-															</div>
-														</div>
-														{el.status == "DRAFT" || el.status == "PENDING" ? (
-															<div className="causes-single-btn__contain">
-																<button className="thm-btn delete thm-btn-sm" onClick={() => deleteCampaign(el.id)}>
-																	<i className="fas fa-trash"></i> Delete
-																</button>
-																<button className="thm-btn edit thm-btn-sm" onClick={() => router.replace(`/form-campaign/${el.id}`)}>
-																	<i className="far fa-edit"></i> Edit Detail
-																</button>
-															</div>
-														) : el.allowEdit == 1 ? (
-															<div className="causes-single-btn__contain">
-																<button className="thm-btn edit thm-btn-sm" onClick={() => router.replace(`/form-campaign/${el.id}`)}>
-																	<i className="far fa-edit"></i> Edit Detail
-																</button>
-															</div>
-														) : null}
-													</div>
-												</div>
-											</Col>
-										))}
-									</Row>
-								</Tab.Pane>
-								<Tab.Pane eventKey={7}>
-									<Row>
-										{campaignList.map((el, index) => (
-											<Col xl={4} lg={6} md={6} key={index}>
-												<div className={"my-4"}>
-													<div style={{ userSelect: "none" }} className="causes-one__single animated fadeInLeft">
-														<div className="causes-one__img">
-															<div className="causes-one__img-box">
-																<Link href={`/projects/${el.id}`}>
-																	<Image
-																		src={el.campaignGallery?.length > 0 ? `${api.RESOURCE}${el.campaignGallery[0]}` : "/causes-one-img-1.jpg"}
-																		alt=""
-																		style={{ cursor: "pointer" }}
-																	/>
-																</Link>
-															</div>
-															<div className="causes-one__category" style={{ backgroundColor: "#6c757d" }}>
-																<span>
-																	<span className="icon-access_alarms"></span> {el.status}
-																</span>
-															</div>
-														</div>
-														<div className="causes-one__content">
-															<h3 className="causes-one__title">{el.campaignTile}</h3>
-															<span className="causes-one__date">
-																Created: <strong>{el.createdAt}</strong>
-															</span>
-														</div>
-														<div className="causes__progress-contain">
-															<div className="causes-one__progress">
-																<ReactVisibilitySensor offset={{ top: 10 }} delayedCall={true} onChange={onVisibilityChange}>
-																	<div className="bar">
-																		<div
-																			className="bar-inner count-bar"
-																			data-percent={`${countStart ? Math.round((+el.raised / +el.goal) * 100) : 0}%`}
-																			style={{
-																				width: `${countStart ? Math.round((+el.raised / +el.goal) * 100) : 0}%`,
-																				opacity: 1,
-																			}}
-																		>
-																			<div className="count-text" style={{ opacity: 1 }}>
-																				{countStart && el.goal > 0 ? Math.round((+el.raised / +el.goal) * 100) : 0}%
-																			</div>
-																		</div>
-																	</div>
-																</ReactVisibilitySensor>
-																<div className="causes-one__goals">
-																	<p>
-																		<span>${el.raised.toFixed(2)}</span> Raised
-																	</p>
-																	<p>
-																		<span>${el.goal.toFixed(2)}</span> Goal
-																	</p>
-																</div>
-															</div>
-														</div>
-														{el.status == "DRAFT" || el.status == "PENDING" ? (
-															<div className="causes-single-btn__contain">
-																<button className="thm-btn delete thm-btn-sm" onClick={() => deleteCampaign(el.id)}>
-																	<i className="fas fa-trash"></i> Delete
-																</button>
-																<button className="thm-btn edit thm-btn-sm" onClick={() => router.replace(`/form-campaign/${el.id}`)}>
-																	<i className="far fa-edit"></i> Edit Detail
-																</button>
-															</div>
-														) : el.allowEdit == 1 ? (
-															<div className="causes-single-btn__contain">
-																<button className="thm-btn edit thm-btn-sm" onClick={() => router.replace(`/form-campaign/${el.id}`)}>
-																	<i className="far fa-edit"></i> Edit Detail
-																</button>
-															</div>
-														) : null}
-													</div>
-												</div>
-											</Col>
-										))}
-									</Row>
-								</Tab.Pane>
-							</Tab.Content>
-						</Tab.Container>
-					</div> */}
 				</Container>
 			</section>
 		</Layout>

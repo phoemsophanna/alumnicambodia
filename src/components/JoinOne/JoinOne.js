@@ -24,8 +24,6 @@ const JoinOne = ({ className = "", data = null }) => {
 								<a href="#" onClick={() => toggleLogin()} className="join-one__btn thm-btn">
 									<i className="fas fa-arrow-circle-right"></i> {data?.bannerLabel}
 								</a>) : "" }
-							{/* <Link href={`${data?.bannerLinkTo}`}> */}
-							{/* </Link> */}
 						</div>
 					</Col>
 				</Row>

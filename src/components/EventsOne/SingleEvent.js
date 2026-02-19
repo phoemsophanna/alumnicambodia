@@ -24,13 +24,13 @@ const SingleEvent = ({ event = {}, eventsPage }) => {
 					<div className="events-one__bottom">
 						<h3 className="events-one__bottom-title">
 							<Link href={`/portfolios/${id}`}>
-								<a>
+								<span>
 									{title_content.split("\n").map((t, i) => (
 										<span className="d-block" key={i}>
 											{t}
 										</span>
 									))}
-								</a>
+								</span>
 							</Link>
 						</h3>
 					</div>

@@ -8,7 +8,7 @@ import { api } from "src/config";
 
 const CausesSingle = ({ cause = null, causePage = null}) => {
 	const {t} = useTranslation();
-	const { toggleDonation } = useRootContext();
+	const { toggleDonation,formatUSD } = useRootContext();
 	const [countStart, setCountStart] = useState(false);
 
 	const onVisibilityChange = (isVisible) => {
@@ -25,16 +25,16 @@ const CausesSingle = ({ cause = null, causePage = null}) => {
 	return (
 		<div className={causePage ? "" : "my-4"}>
 			<div style={causePage ? {} : { userSelect: "none" }} className="causes-one__single animated fadeInLeft">
-				<div className="causes-one__img">
-					<div className="causes-one__img-box">
-						<Link href={`/projects/${cause?.id}`}>
+				<Link href={`/projects/${cause?.id}`}>
+					<div className="causes-one__img">
+						<div className="causes-one__img-box">
 							<Image src={cause?.campaignGallery?.length > 0 ? `${api.RESOURCE}${cause?.campaignGallery[0]}` : "causes-one-img-1.jpg"} alt="" style={{ cursor: "pointer" }} />
-						</Link>
-					</div> 
-					{cause?.campaignCategory ? <div className="causes-one__category">
-						<span>{cause?.campaignCategory?.name}</span>
-					</div> : null}
-				</div>
+						</div> 
+						{cause?.campaignCategory ? <div className="causes-one__category">
+							<span>{cause?.campaignCategory?.name}</span>
+						</div> : null}
+					</div>
+				</Link>
 				<div className="causes-one__content">
 					<h3 className="causes-one__title">
 						<Link href={`/projects/${cause?.id}`}>{cause?.campaignTile}</Link>
@@ -59,10 +59,10 @@ const CausesSingle = ({ cause = null, causePage = null}) => {
 						</ReactVisibilitySensor>
 						<div className="causes-one__goals">
 							<p>
-								<span>${raisedNumber}</span> {t("general.Raised")}
+								<span>${formatUSD(raisedNumber)}</span> {t("general.Raised")}
 							</p>
 							<p>
-								<span>${goalNumber}</span> {t("general.Goal")}
+								<span>${formatUSD(goalNumber)}</span> {t("general.Goal")}
 							</p>
 						</div>
 					</div>

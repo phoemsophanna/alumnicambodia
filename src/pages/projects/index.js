@@ -124,12 +124,13 @@ const Projects = () => {
 
 	const handleSelectCategory = async (id) => {
 		const exitId = selectCategory.find((el) => el == id);
+		var selectCategories = [];
 		if (exitId) {
-			selectCategory = selectCategory.filter((el) => el != id);
+			selectCategories = selectCategory.filter((el) => el != id);
 		} else {
-			selectCategory.push(id);
+			selectCategories.push(id);
 		}
-		setSelectCategory(selectCategory);
+		setSelectCategory(selectCategories);
 
 		await axios
 			.request({

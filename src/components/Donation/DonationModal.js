@@ -23,9 +23,10 @@ const DonationModal = () => {
 	const router = useRouter();
 	const alert = useAlert();
 	// Template
-	const { donationModal, toggleDonation, lang, donationDetail } = useRootContext();
+	const { donationModal, toggleDonation, lang, donationDetail, formatUSD, userProfile } = useRootContext();
 	const [suggestPrice, setSuggestPrice] = useState(1);
 	const [radioValue, setRadioValue] = useState("");
+	const [abaForm, setAbaForm] = useState(null);
 	const [tip, setTip] = useState(0);
 	const [tipCustom, setTipCustom] = useState(false);
 	const [termModal, setTermModal] = useState(false);
@@ -41,6 +42,10 @@ const DonationModal = () => {
 			paymentMethod: null,
 			note: null,
 			isConfirmAgreement: false,
+			firstName: userProfile?.name ? userProfile?.name.split(" ")[0] : "Annonymous",
+			lastName: userProfile?.name ? userProfile?.name.split(" ")[1] : null,
+			receiverPhone: userProfile?.phoneNumber ? userProfile?.phoneNumber : null,
+			paymentOption: "abapay_khqr"  
 		},
 		validationSchema: Yup.object({
 			paymentMethod: Yup.string().required("Please select payment method"),
@@ -50,7 +55,7 @@ const DonationModal = () => {
 			values.campaignId = donationDetail?.id;
 			values.donateType = radioValue;
 			values.total = values.amount + values.tip;
-			console.log(values);
+			values.paymentOption = values.paymentMethod == "ABAKHQR" ? "abapay_khqr" : "cards";
 			if (values.isConfirmAgreement) {
 				onSaveDonation(values);
 			}
@@ -80,9 +85,10 @@ const DonationModal = () => {
 			.then((response) => {
 				console.log(response);
 				if (response.data.status == "success") {
-					reset();
-					toggleDonation(false, null);
-					alert.success(<span style={{ fontSize: "12px" }}>Donation Successfully!</span>);
+					setAbaForm(response.data.data);
+					setTimeout(() => {
+						AbaPayway.checkout();
+					}, 1500);
 				} else {
 					alert.error("You just broke something!");
 				}
@@ -93,7 +99,7 @@ const DonationModal = () => {
 			})
 			.finally(() => {
 				setLoadingSave(false);
-				donationSubmit.resetForm();
+				// donationSubmit.resetForm();
 				setSuggestPrice(1);
 				setRadioValue("");
 				setTip(0);
@@ -165,9 +171,17 @@ const DonationModal = () => {
 		}
 	};
 
+	useEffect(() => {
+		if(userProfile){
+			donationSubmit.setFieldValue("firstName", userProfile?.name ? userProfile?.name.split(" ")[0] : "Annonymous");
+			donationSubmit.setFieldValue("lastName", userProfile?.name ? userProfile?.name.split(" ")[1] : null)
+		}
+	},[userProfile])
+
 	const radios = ["Daily", "Weekly", "Monthly", "Yearly"];
 
 	return (
+		<>
 		<Modal
 			show={donationModal}
 			onHide={() => {
@@ -207,8 +221,8 @@ const DonationModal = () => {
 											</h3>
 
 											<p>
-												<i className="fas fa-search-dollar"></i> <strong>${donationDetail?.goal}</strong> Goal
-												<i className="fas fa-hand-holding-usd ms-4"></i> <strong>${donationDetail?.totalRaised}</strong> Raised
+												<i className="fas fa-search-dollar"></i> <strong>${formatUSD(donationDetail?.goal)}</strong> Goal
+												<i className="fas fa-hand-holding-usd ms-4"></i> <strong>${formatUSD(donationDetail?.totalRaised)}</strong> Raised
 											</p>
 										</div>
 									</div>
@@ -219,25 +233,6 @@ const DonationModal = () => {
 										<p>100% of all donations go to the beneficiaries</p>
 									</div>
 									<div className="donation__input-container">
-										{/* <div className="multi-button">
-											{radios.map((el, index) => (
-												<button
-													key={index}
-													type="button"
-													className={el == radioValue ? "active" : ""}
-													onClick={() => {
-														if(el !== radioValue) {
-															setRadioValue(el);
-														} else {
-															setRadioValue(null);
-														}
-													}}
-												>
-													{el == radioValue ? <i className="far fa-calendar-check"></i> : <i className="far fa-calendar"></i>} {el}
-												</button>
-											))}
-										</div> */}
-
 										<div className="donation__input-price">
 											<input
 												type="text"
@@ -308,71 +303,6 @@ const DonationModal = () => {
 											</button>
 										</div>
 									</div>
-									{/* <div
-										style={{
-											display: "block",
-											width: "100%",
-											background: "#eff5f4",
-											padding: "40px 21px 30px",
-											borderRadius: "18px",
-											marginTop: "2rem",
-										}}
-									>
-										{!tipCustom ? (
-											<Slider
-												min={0}
-												max={25}
-												marks={{
-													0: "0%",
-													5: "5%",
-													10: "10%",
-													15: "15%",
-													20: "20%",
-													25: "25%",
-												}}
-												step={null}
-												onChange={(value) => {
-													setTip(value);
-													donationSubmit.values.tip = parseFloat(donationSubmit.values.amount) * parseFloat(value / 100);
-												}}
-												defaultValue={0}
-												railStyle={{ height: 10, backgroundColor: "#fff" }}
-												trackStyle={{ height: 10, backgroundColor: "#04735b" }}
-												handleStyle={{
-													height: 12,
-													width: 12,
-													marginLeft: 0,
-													marginTop: "-1px",
-													borderColor: "#04735b",
-												}}
-												dotStyle={{ height: 12, width: 12, marginBottom: "-5px", borderColor: "#04735b" }}
-											/>
-										) : (
-											<div className="donation__input-price">
-												<input
-													type="text"
-													placeholder="Enter your tip"
-													name="tip"
-													autoComplete="off"
-													onChange={donationSubmit.handleChange}
-													value={donationSubmit.values.tip}
-												/>
-												<span>USD ($) </span>
-											</div>
-										)}
-
-										<button
-											type="button"
-											className={`thm-btn donation-custom-tip ${tipCustom ? "active" : ""}`}
-											onClick={() => {
-												setTipCustom(!tipCustom);
-												setTip(null);
-												donationSubmit.values.tip = 0;
-											}}
-										>
-											<i className="fas fa-donate"></i> {!tipCustom ? "Custom Tip" : "Close Custom Tip"}
-										</button>
-									</div> */}
 									<div className="causes__progress-contain">
 										<div className="causes-one__progress">
 											<ReactVisibilitySensor offset={{ top: 10 }} delayedCall={true} onChange={onVisibilityChange}>
@@ -390,10 +320,10 @@ const DonationModal = () => {
 											</ReactVisibilitySensor>
 											<div className="causes-one__goals">
 												<p>
-													<span>${donationDetail?.totalRaised}</span> Raised
+													<span>${formatUSD(donationDetail?.totalRaised)}</span> Raised
 												</p>
 												<p>
-													<span>${donationDetail?.goal}</span> Goal
+													<span>${formatUSD(donationDetail?.goal)}</span> Goal
 												</p>
 											</div>
 										</div>
@@ -519,8 +449,8 @@ const DonationModal = () => {
 											</h3>
 
 											<p>
-												<i className="fas fa-search-dollar"></i> <strong>${donationDetail?.goal}</strong> Goal
-												<i className="fas fa-hand-holding-usd ms-4"></i> <strong>${donationDetail?.totalRaised}</strong> Raised
+												<i className="fas fa-search-dollar"></i> <strong>${formatUSD(donationDetail?.goal)}</strong> Goal
+												<i className="fas fa-hand-holding-usd ms-4"></i> <strong>${formatUSD(donationDetail?.totalRaised)}</strong> Raised
 											</p>
 										</div>
 									</div>
@@ -558,6 +488,27 @@ const DonationModal = () => {
 				</Container>
 			</Modal.Body>
 		</Modal>
+
+		<div id="aba_main_modal" class="aba-modal">
+			<div class="aba-modal-content">
+				<form method="POST" target="aba_webservice" action={abaForm?.api} id="aba_merchant_request">
+					<input type="hidden" name="hash" value={abaForm?.hash} id="hash"/>
+					<input type="hidden" name="tran_id" value={abaForm?.tran_id} id="tran_id"/>
+					<input type="hidden" name="amount" value={abaForm?.amount} id="amount"/>
+					<input type="hidden" name="firstname" value={abaForm?.firstName ? abaForm?.firstName : null} id="firstname" />
+					<input type="hidden" name="lastname" value={abaForm?.lastName ? abaForm?.lastName : null} id="lastname" />
+					<input type="hidden" name="req_time" value={abaForm?.req_time} id="req_time" />
+					<input type="hidden" name="merchant_id" value={abaForm?.merchant_id} id="merchant_id" />
+					<input type="hidden" name="payment_option" value={abaForm?.payment_option} id="payment_option" />
+					<input type="hidden" name="currency" value={abaForm?.currency} id="currency" />
+					<input type="hidden" name="return_url" value={abaForm?.returnUrl} id="return_url" />
+					<input type="hidden" name="continue_success_url" value={abaForm?.continue_success_url} id="continue_success_url" />
+					<input type="hidden" name="view_type" value={abaForm?.view_type} id="view_type" />
+				</form>
+			</div>
+		</div>
+		<script src="https://checkout.payway.com.kh/plugins/checkout2-0.js"></script>
+		</>
 	);
 };
 

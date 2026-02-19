@@ -269,9 +269,9 @@ const Withdraw = () => {
 								</div>
 							</div>
 							<Link href="/dashboard">
-								<a className="main-menu__donate-btn" style={{ border: "none" }}>
+								<span className="main-menu__donate-btn" style={{ border: "none" }}>
 									<i className="fas fa-arrow-left"></i> Go Back
-								</a>
+								</span>
 							</Link>
 						</div>
 						<DataTable

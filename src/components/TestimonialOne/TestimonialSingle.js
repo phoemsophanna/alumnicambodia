@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useRootContext } from "@/context/context";
 import { Image } from "react-bootstrap";
 import { api } from "src/config";
 
 const TestimonialSingle = ({ singleTestimonial }) => {
 	const [errorImage, setErrorImage] = useState(false);
+	const { formatUSD } = useRootContext();
 	return (
 		<div>
 			{singleTestimonial.map((donor, index) => (
@@ -32,7 +34,7 @@ const TestimonialSingle = ({ singleTestimonial }) => {
 						</div>
 						<div className="testimonial-one__client-name">
 							<h3>{donor?.name}</h3>
-							<p>${parseFloat(donor?.totalDonation).toFixed(2)}</p>
+							<p>${formatUSD(donor?.totalDonation)}</p>
 						</div>
 					</div>
 				</div>

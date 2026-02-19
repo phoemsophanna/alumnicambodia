@@ -62,13 +62,6 @@ const HeaderOne = () => {
 
 	return (
 		<header className="main-header clearfix">
-			{/* <div className="main-header__logo">
-				<Link href="/">
-					<a>
-						<Image src={brandLogo.src} alt="Alumni Logo" />
-					</a>
-				</Link>
-			</div> */}
 			<div className="main-menu-wrapper">
 				<div className="main-menu-wrapper__top">
 					<div className="main-menu-wrapper__top-inner">
@@ -202,27 +195,14 @@ const HeaderOne = () => {
 						<div className={scrollTop ? "sticky-header__content main-menu__inner" : "main-menu__inner"}>
 							<div className="main-header__logo-mobile d-md-none d-block">
 								<Link href="/">
-									<a>
-										<Image src={brandLogo.src} alt="Alumni Logo" />
-									</a>
+									<Image src={brandLogo.src} alt="Alumni Logo" />
 								</Link>
 							</div>
 							<div className="main-header__logo-mobile d-md-block d-none">
 								<Link href="/">
-									<a>
-										<Image src={brandLogo.src} alt="Alumni Logo" />
-									</a>
+									<Image src={brandLogo.src} alt="Alumni Logo" />
 								</Link>
 							</div>
-							{/* {scrollTop ? (
-								<div className="main-header__logo-mobile d-block">
-									<Link href="/">
-										<a>
-											<Image src={brandLogo.src} alt="Alumni Logo" />
-										</a>
-									</Link>
-								</div>
-							) : null} */}
 
 							{scrollTop ? (
 								<ul className="main-menu__list">
@@ -268,9 +248,9 @@ const HeaderOne = () => {
 									</button>
 								) : (
 									<Link href="/dashboard">
-										<a className="main-menu__donate-btn" style={{ border: "none" }}>
+										<span className="main-menu__donate-btn" style={{ border: "none" }}>
 											<i className="far fa-user"></i> {userProfile?.firstName} {userProfile?.lastName}
-										</a>
+										</span>
 									</Link>
 								)}
 
@@ -291,9 +271,7 @@ const HeaderOne = () => {
 						<div className={scrollTop ? "sticky-header__content mobile-menu main-menu__inner" : "main-menu__inner mobile-menu"}>
 							<div className="main-header__logo-mobile d-md-none d-block">
 								<Link href="/">
-									<a>
-										<Image src={brandLogo.src} alt="Alumni Logo" />
-									</a>
+									<Image src={brandLogo.src} alt="Alumni Logo" />
 								</Link>
 							</div>
 
@@ -305,9 +283,9 @@ const HeaderOne = () => {
 									</button>
 								) : (
 									<Link href="/dashboard">
-										<a className="main-menu__donate-btn" style={{ border: "none" }}>
+										<span className="main-menu__donate-btn" style={{ border: "none" }}>
 											<i className="far fa-user"></i> {userProfile?.firstName} {userProfile?.lastName}
-										</a>
+										</span>
 									</Link>
 								)}
 

@@ -38,7 +38,7 @@ const ProjectDetail = (props) => {
 						}
 					}).then((res) => {
                         if (res.data?.status === "success") {
-                            response.data?.qrCode = res.data?.qrCode;
+                            // response.data.qrCode = res.data?.qrCode;
                         }
                     });
 				}

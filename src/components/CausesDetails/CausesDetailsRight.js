@@ -23,7 +23,7 @@ function downloadBlob(blob, filename) {
 
 const CausesDetailsRight = ({ creator = null, campaignId = null, detail = null }) => {
 	const {t} = useTranslation();
-	const { toggleLogin, userProfile } = useRootContext();
+	const { toggleLogin, userProfile, formatUSD } = useRootContext();
 	const [countLike, setCountLike] = useState(0);
 	const [countShare, setCountShare] = useState(0);
 	const [modalShow, setModalShow] = useState(false);
@@ -339,7 +339,7 @@ const CausesDetailsRight = ({ creator = null, campaignId = null, detail = null }
 								<Image src={item?.donor?.image ? `${api.RESOURCE}${item?.donor?.image}` : "/default_pfp.jpg"} alt="" />
 							</div>
 							<div className="causes-details__donations-content">
-								<h4>${parseFloat(item?.amount).toFixed(2)}</h4>
+								<h4>${formatUSD(item?.amount)}</h4>
 								<h5>
 									{item?.donor?.name || "Anonymous"} <span>{item?.dayPass}</span>
 								</h5>

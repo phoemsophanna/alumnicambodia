@@ -8,7 +8,7 @@ import { useRootContext } from "@/context/context";
 import { useTranslation } from "react-i18next";
 import { api } from "src/config";
 import axios from "axios";
-const { exploreList, social, email, tel, officeAddress, about, link, copyrightYear, footerBg } = footerData;
+var { exploreList, social, email, tel, officeAddress, about, link, copyrightYear, footerBg } = footerData;
 
 const SiteFooter = () => {
 	const { t } = useTranslation();
@@ -69,18 +69,18 @@ const SiteFooter = () => {
 									{exploreList.slice(0, 7).map(({ id, title, href }) => (
 										<li key={id}>
 											<Link href={href}>
-												<a href="#" style={{textTransform: "capitalize"}}>{t(`header.${title}`)}</a>
+												<span href="#" style={{textTransform: "capitalize"}}>{t(`header.${title}`)}</span>
 											</Link>
 										</li>
 									))}
 									<li>
 										<Link href="/terms-conditions">
-											<a href="#">{t("general.Term&Condition")}</a>
+											<span href="#">{t("general.Term&Condition")}</span>
 										</Link>
 									</li>
 									<li>
 										<Link href="/privacy-policy">
-											<a href="#">{t("general.PrivacyPolicy")}</a>
+											<span href="#">{t("general.PrivacyPolicy")}</span>
 										</Link>
 									</li>
 								</ul>
@@ -194,9 +194,7 @@ const SiteFooter = () => {
 								<div className="site-footer__bottom-logo-social">
 									<div className="site-footer__bottom-logo" style={{ padding: "10px 16px" }}>
 										<Link href="/">
-											<a>
-												<Image src={brandLogo.src} alt="CDA Logo - Children Cambodia Association Logo" width="114" />
-											</a>
+											<Image src={brandLogo.src} alt="CDA Logo - Children Cambodia Association Logo" width="114" />
 										</Link>
 									</div>
 								</div>

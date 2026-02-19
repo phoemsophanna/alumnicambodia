@@ -13,7 +13,7 @@ const CausesDetailsLeft = ({ campaign = null }) => {
 	const { t } = useTranslation();
 	const [isOpen, setOpen] = useState(false);
 	const [isOpenMP4, setOpenMP4] = useState(false);
-	const { toggleDonation, toggleLogin } = useRootContext();
+	const { toggleDonation, toggleLogin, formatUSD } = useRootContext();
 	const raisedNumber = campaign ? +campaign?.totalRaised : 0;
 	const goalNumber = campaign ? +campaign?.goal : 0;
 	const percent = Math.round((raisedNumber / goalNumber) * 100) + "%";
@@ -203,10 +203,10 @@ const CausesDetailsLeft = ({ campaign = null }) => {
 						</div>
 						<div className="causes-details__goals">
 							<p>
-								<span>${raisedNumber}</span> {t("general.Raised")}
+								<span>${formatUSD(raisedNumber)}</span> {t("general.Raised")}
 							</p>
 							<p>
-								<span>${goalNumber}</span> {t("general.Goal")}
+								<span>${formatUSD(goalNumber)}</span> {t("general.Goal")}
 							</p>
 						</div>
 						<button className="thm-btn donation-detail-button" onClick={() => toggleDonation(true, campaign?.id)}>

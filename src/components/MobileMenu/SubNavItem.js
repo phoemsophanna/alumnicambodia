@@ -15,7 +15,7 @@ const SubNavItem = ({ subItem = {} }) => {
   return (
     <li style={{paddingLeft: "10px"}}>
       <Link href={href}>
-        <a className={expand && subItems?.length ? " expanded" : ""}>
+        <span className={expand && subItems?.length ? " expanded" : ""}>
           {name}
           {subItems?.length && (
             <button
@@ -26,7 +26,7 @@ const SubNavItem = ({ subItem = {} }) => {
               <i className="fa fa-angle-down"></i>
             </button>
           )}
-        </a>
+        </span>
       </Link>
       <ul
         style={{

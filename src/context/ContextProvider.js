@@ -116,11 +116,19 @@ const ContextProvider = ({ children }) => {
 		setSelectCategoryId(id);
 	}
 
+	const formatUSD = (value) => {
+      return new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(value);
+    };
+
 	const value = {
 		menuStatus,
 		openSearch,
 		toggleMenu,
 		toggleSearch,
+		formatUSD,
 		donationModal,
 		donationDetail,
 		toggleDonation,
