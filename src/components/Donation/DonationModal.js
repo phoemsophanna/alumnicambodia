@@ -83,12 +83,11 @@ const DonationModal = () => {
 				data: values,
 			})
 			.then((response) => {
-				console.log(response);
 				if (response.data.status == "success") {
 					setAbaForm(response.data.data);
 					setTimeout(() => {
 						AbaPayway.checkout();
-					}, 1500);
+					}, 800);
 				} else {
 					alert.error("You just broke something!");
 				}
