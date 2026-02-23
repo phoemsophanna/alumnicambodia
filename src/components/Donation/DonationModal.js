@@ -335,7 +335,7 @@ const DonationModal = () => {
 												<div className="check-payment-option">
 													<Image src={"/abaLogo.svg"} style={{marginRight: "10px", height: 50}} alt="" />
 													<div className="check-payment-option-content">
-														<h4>KHQR</h4>
+														<h4>ABA KHQR</h4>
 														<p>Scan to pay with any banking app</p>
 													</div>
 												</div>

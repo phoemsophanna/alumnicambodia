@@ -8159,11 +8159,12 @@ input[type="color"]:focus,
 	font-size: 15px;
 	margin: 0;
 	padding: 0;
-	display: -webkit-box;
+	line-height: 1.4;
+	/* display: -webkit-box;
 	-webkit-line-clamp: 1;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
-	text-overflow: ellipsis;
+	text-overflow: ellipsis; */
 }
 .check-payment-option-content img {
 	height: 14px;
