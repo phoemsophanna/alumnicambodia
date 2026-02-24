@@ -1686,7 +1686,24 @@
 		margin-top: 50px;
 	}
 
+	.payment-options {
+		padding: 8px 0.5rem 8px;
+	}
+
+	.payment-options .form-check:first-child {
+		margin-top: 0;
+	}
+
+	.payment-options .form-check {
+		padding-left: 5px;
+	}
+
 	.mobile-nav__content .logo-box {
 		display: none;
+	}
+
+	.modal-fullscreen .modal-body {
+		padding-left: 5px;
+		padding-right: 5px;
 	}
 }
