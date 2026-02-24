@@ -1696,6 +1696,7 @@
 
 	.payment-options .form-check {
 		padding-left: 5px;
+		padding-right: 5px;
 	}
 
 	.mobile-nav__content .logo-box {
@@ -1711,4 +1712,12 @@
 		padding-left: 5px;
 		padding-right: 5px;
 	}
+}
+
+.payment-options .form-check {
+	padding-left: 5px;
+}
+
+.payment-options .form-check.active {
+	border: 1px solid #292d96;
 }
