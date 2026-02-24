@@ -1706,4 +1706,9 @@
 		padding-left: 5px;
 		padding-right: 5px;
 	}
+
+	.modal-fullscreen .modal-body .col-lg-7 {
+		padding-left: 5px;
+		padding-right: 5px;
+	}
 }
