@@ -10172,8 +10172,9 @@ input[type="color"]:focus,
 }
 
 .main-menu__donate-btn.member-btn {
+	display: inline-block;
   max-width: 130px;
-  overflow: "hidden";
-  white-space: "nowrap";
-  text-overflow: "ellipsis";
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
