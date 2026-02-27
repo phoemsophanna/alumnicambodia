@@ -248,7 +248,7 @@ const HeaderOne = () => {
 									</button>
 								) : (
 									<Link href="/dashboard">
-										<span className="main-menu__donate-btn" style={{ border: "none" }}>
+										<span className="main-menu__donate-btn member-btn" style={{ border: "none" }}>
 											<i className="far fa-user"></i> {userProfile?.firstName} {userProfile?.lastName}
 										</span>
 									</Link>
@@ -283,7 +283,7 @@ const HeaderOne = () => {
 									</button>
 								) : (
 									<Link href="/dashboard">
-										<span className="main-menu__donate-btn" style={{ border: "none" }}>
+										<span className="main-menu__donate-btn member-btn" style={{ border: "none" }}>
 											<i className="far fa-user"></i> {userProfile?.firstName} {userProfile?.lastName}
 										</span>
 									</Link>

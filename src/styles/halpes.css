@@ -10171,10 +10171,9 @@ input[type="color"]:focus,
 	gap: 0 !important;
 }
 
-.main-menu__donate-btn {
-	display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-	width: 130px;
+.main-menu__donate-btn.member-btn {
+  max-width: 130px;
+  overflow: "hidden";
+  white-space: "nowrap";
+  text-overflow: "ellipsis";
 }
