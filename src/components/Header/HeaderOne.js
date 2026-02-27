@@ -219,7 +219,7 @@ const HeaderOne = () => {
 										<NavItem key={navItem.id} navItem={navItem} />
 									))} */}
 									{navItems.map((navItem) => (
-										<NavItem key={navItem.id} navItem={navItem} />
+										<NavItem key={navItem.id} navItem={navItem} /> 
 									))}
 								</ul>
 							)}

@@ -10170,3 +10170,11 @@ input[type="color"]:focus,
 .dropdown ul {
 	gap: 0 !important;
 }
+
+.main-menu__donate-btn {
+	display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
+}
