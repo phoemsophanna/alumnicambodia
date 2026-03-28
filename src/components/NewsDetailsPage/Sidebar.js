@@ -43,7 +43,7 @@ const Sidebar = ({ type = null, id = null }) => {
 
 	useEffect(() => {
 		fetchListRelated(type);
-	}, [type]);
+	}, [type, lang]);
 
 	return (
 		<div className="sidebar">
